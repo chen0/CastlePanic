@@ -1,0 +1,17 @@
+{
+    "extends": "tslint:recommended",
+    "exclude": "./node_modules/**/*.js",
+    "rules": {
+      "max-line-length": [true, 120],
+      "object-literal-sort-keys": false,
+      "object-literal-shorthand": false,
+      "interface-name": [true, "never-prefix"],
+      "no-var-requires": true,
+      "quotemark": [true, "single"],
+      "trailing-comma": [true],
+      "triple-equals": [true],
+      "no-console": [true,"log"],
+      "linebreak-style": [true],
+      "prefer-const": false
+    }
+  }
