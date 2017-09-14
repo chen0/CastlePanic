@@ -10,6 +10,7 @@
     "@angular/platform-browser-dynamic": "^4.3.6",
     "express": "^4.15.4",
     "lodash": "^4.17.4",
+    "mysql": "^2.14.1",
     "rxjs": "^5.4.3",
     "zone.js": "^0.8.17"
   },
