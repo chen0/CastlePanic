@@ -3,7 +3,7 @@ import * as path from 'path';
 
 /**
  * The Server object manages the express.js server. This server will serve all files in public/
- * 
+ *
  * @class Server
  */
 class Server {
@@ -24,8 +24,8 @@ class Server {
 
     /**
      * Gets the express router from the server so that you can add new routes to the server.
-     * 
-     * @returns {express.Router} 
+     *
+     * @returns {express.Router}
      * @memberof Server
      */
     public getRouter(): express.Router {
@@ -34,7 +34,7 @@ class Server {
 
     /**
      * Starts the express server on port
-     * 
+     *
      * @memberof Server
      */
     public start(): void {

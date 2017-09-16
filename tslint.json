@@ -7,6 +7,7 @@
       "object-literal-shorthand": false,
       "interface-name": [true, "never-prefix"],
       "no-var-requires": true,
+      "no-trailing-whitespace": false,
       "quotemark": [true, "single"],
       "trailing-comma": [true],
       "triple-equals": [true],

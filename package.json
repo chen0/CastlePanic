@@ -8,9 +8,11 @@
     "@angular/core": "^4.3.6",
     "@angular/platform-browser": "^4.3.6",
     "@angular/platform-browser-dynamic": "^4.3.6",
+    "@types/lodash": "^4.14.74",
     "express": "^4.15.4",
     "lodash": "^4.17.4",
     "mysql": "^2.14.1",
+    "niceware": "^1.0.4",
     "rxjs": "^5.4.3",
     "zone.js": "^0.8.17"
   },
@@ -18,6 +20,7 @@
     "@angular/compiler": "^4.3.6",
     "@angular/compiler-cli": "^4.3.6",
     "@types/express": "^4.0.37",
+    "@types/mysql": "^0.0.34",
     "@types/node": "^8.0.25",
     "clean-webpack-plugin": "^0.1.16",
     "copy-webpack-plugin": "^4.0.1",
@@ -32,6 +35,7 @@
   },
   "scripts": {
     "build": "webpack",
-    "start": "node ./dist/server.bundle.js"
+    "start": "node ./dist/server.bundle.js",
+    "db:update": "scp ./src/server/database/tables.sql ubuntu@10.10.4.15:/home/ubuntu/tables.sql; ssh ubuntu@10.10.4.15 'mysql CastlePanicDB < tables.sql'"
   }
 }
