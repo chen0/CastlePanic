@@ -1,14 +1,18 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { MainComponent } from './main.component';
+import { AppRoutingModule, routingComponents } from './app.routing';
+import { CreateComponent } from './create/create.component';
+import { MainComponent } from './main/main.component';
 
 @NgModule({
-    declarations: [
-        MainComponent
-    ],
     imports: [
-        BrowserModule
+        BrowserModule,
+        AppRoutingModule
+    ],
+    declarations: [
+        MainComponent,
+        routingComponents
     ],
     bootstrap: [
         MainComponent
