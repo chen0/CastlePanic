@@ -1,24 +1,22 @@
-import { Injectable, Inject } from '@angular/core';
-import { Http, Response } from '@angular/http';
-import { Headers, RequestOptions } from '@angular/http';
-import { Observable } from 'rxjs';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
+import { Inject, Injectable } from '@angular/core';
+import { Headers, Http, RequestOptions, Response } from '@angular/http';
 import { Game } from './game';
+
+import { Observable } from 'rxjs';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/map';
 
 @Injectable()
 export class GameSessionService {
-	url = "api/newGame"; 
-	//extractData: String;
-	handleErrorObservable: String;
-	constructor(@Inject(Http) private http:Http) {}
+    public url = 'api/newGame'; 
+    public handleErrorObservable: string;
+    constructor(@Inject(Http) private http: Http) {}
 
-	public getGameSessionID(): Observable<Game> {
-		let headers = new Headers({ 'Content-Type': 'application/json' });
-		let options = new RequestOptions({headers: headers}); 
-		return this.http.post(this.url, JSON.stringify("getID"), options)
-			.map((res:Response) => res.json())
-            .catch((error:any) => Observable.throw(error.json().error || 'Error'));
-			
-	}
+    public getGameSessionID(): Observable<Game> {
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({headers: headers}); 
+        return this.http.post(this.url, JSON.stringify('getID'), options)
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json().error || 'Error'));
+    }
 }

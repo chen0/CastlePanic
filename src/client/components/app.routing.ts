@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CreateComponent } from './create/create.component';
-import { TestComponent } from './test/test.component';
 import { IndexComponent } from './index/index.component';
+import { TestComponent } from './test/test.component';
 
 let routes: Routes = [
     { path: 'lobby/:id', component: CreateComponent },
