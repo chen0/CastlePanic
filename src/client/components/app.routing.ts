@@ -2,16 +2,18 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CreateComponent } from './create/create.component';
 import { TestComponent } from './test/test.component';
+import { IndexComponent } from './index/index.component';
 
 let routes: Routes = [
-    { path: 'create', component: CreateComponent },
-    { path: 'test', component: TestComponent }
+    { path: 'lobby/:id', component: CreateComponent },
+    { path: 'test', component: TestComponent }, 
+    { path: '', component: IndexComponent }
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes, { useHash: true})],
+    imports: [RouterModule.forRoot(routes, {useHash: true})],
     exports: [RouterModule],
 })
 export class AppRoutingModule { }
 
-export const routingComponents = [CreateComponent, TestComponent];
+export const routingComponents = [CreateComponent, TestComponent, IndexComponent];

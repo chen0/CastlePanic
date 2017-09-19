@@ -2,20 +2,34 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { AppRoutingModule, routingComponents } from './app.routing';
-import { CreateComponent } from './create/create.component';
 import { MainComponent } from './main/main.component';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { HttpModule, JsonpModule } from '@angular/http';
+import { ParticlesModule } from 'angular-particle';
+
+import { GameSessionService } from '../services/game.session.service';
+import { Game } from '../services/game';
+
 
 @NgModule({
     imports: [
         BrowserModule,
-        AppRoutingModule
+        ModalModule.forRoot(),
+        AppRoutingModule, 
+        HttpModule, 
+        JsonpModule, 
+        ParticlesModule
     ],
     declarations: [
         MainComponent,
-        routingComponents
+        routingComponents,        
     ],
     bootstrap: [
-        MainComponent
+        MainComponent, 
+    ], 
+    providers: [
+        GameSessionService, 
+        HttpModule
     ]
 })
 export class MainModule { }

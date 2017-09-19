@@ -11,5 +11,6 @@ export class TestComponent {
     private count: number = 43;
 
     constructor( @Inject(Router) private router: Router) {
+    	document.body.style.backgroundImage = "";
     }
 }

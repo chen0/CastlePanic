@@ -6,15 +6,22 @@
   "dependencies": {
     "@angular/common": "^4.3.6",
     "@angular/core": "^4.3.6",
+    "@angular/http": "^4.4.2",
     "@angular/platform-browser": "^4.3.6",
     "@angular/platform-browser-dynamic": "^4.3.6",
     "@angular/router": "^4.4.1",
     "@types/lodash": "^4.14.74",
+    "angular-particle": "^1.0.4",
+    "css-loader": "^0.28.7",
     "express": "^4.15.4",
+    "extract-text-webpack-plugin": "2.0.0-beta.4",
     "lodash": "^4.17.4",
     "mysql": "^2.14.1",
+    "ngx-bootstrap": "^1.9.3",
     "niceware": "^1.0.4",
     "rxjs": "^5.4.3",
+    "style-loader": "^0.18.2",
+    "to-string-loader": "^1.1.5",
     "zone.js": "^0.8.17"
   },
   "devDependencies": {

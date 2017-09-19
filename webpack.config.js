@@ -4,6 +4,7 @@ const htmlWebpackPlugin = require('html-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
 const path = require('path');
 const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 var cleanWebpack = new CleanWebpackPlugin(['dist'], {
   root: path.resolve(__dirname),
@@ -28,8 +29,12 @@ var uglifyJs = new webpack.optimize.UglifyJsPlugin({
   compress: { warnings: false }
 });
 
+/*var extractTextPlugin = new ExtractTextPlugin({
+  filename: "[name].css"
+}); */
+
 const resolver = {
-  extensions: ['.ts','.tsx','.js','.html'],
+  extensions: ['.ts','.tsx','.js','.html', '.css'],
   modules: ['src','node_modules']
 }
 
@@ -49,7 +54,12 @@ const loaderList = [
     test: /\.html$/,
     exclude: /node_modules/,
     loader: 'html-loader?exportAsEs6Default'
-  }
+  }, 
+
+  {
+   test: /\.css$/,
+   loaders: ['to-string-loader', 'css-loader']
+  }, 
 ]
 
 const serverConfig = {
@@ -87,7 +97,9 @@ const clientConfig = {
   },
   resolve: resolver,
   module: {
+
     loaders: loaderList
+
   },
   plugins: [
     cleanWebpack,

@@ -12,6 +12,7 @@ export class CreateComponent {
     private count: number = 2;
 
     constructor( @Inject(Router) private router: Router) {
+
     }
 
     private test() {
