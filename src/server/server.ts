@@ -1,3 +1,4 @@
+import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import * as path from 'path';
 
@@ -15,7 +16,8 @@ class Server {
 
     constructor() {
         this.express = express();
-
+        this.express.use(bodyParser.urlencoded({ extended: false }));
+        this.express.use(bodyParser.json());
         this.express.use('/', express.static( path.join(__dirname, '/public') ) );
 
         this.router = express.Router();

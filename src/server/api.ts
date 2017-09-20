@@ -1,4 +1,5 @@
 import * as express from 'express';
+import * as _ from 'lodash';
 import {GameSession} from './gameSession';
 import Server from './server';
 
@@ -8,6 +9,7 @@ export class Api {
 
         // creates api routes
         Server.getRouter().post('/api/newGame', this.newGame);
+        Server.getRouter().post('/api/joinGame', this.joinGame);
     }
 
     /**
@@ -30,5 +32,23 @@ export class Api {
             };
             response.json(data);
         });
+    }
+
+    /**
+     * 
+     */
+    private joinGame(request: express.Request, response: express.Response): void {
+        let name = _.get( request, 'body.name', '');
+        let gameCode = _.get( request, 'body.gameCode', '');
+        if (!_.isEqual(name, '') && !_.isEqual(gameCode, '')) {
+            GameSession.addUser(name, 'player', gameCode, (success: boolean) => {
+                response.json({success});
+            });
+        } else {
+            let data = {
+                error: 'Error: Missing parameter'
+            };
+            response.json(data);
+        }
     }
 }
