@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import niceware from 'niceware';
 import {DBConnector} from './database/database';
+import {GameState} from './gameState'; 
 
 export class GameSession {
 
@@ -35,14 +36,14 @@ export class GameSession {
     }
 
     private code: string;
-    private state: any;
+    private state: GameState;
     private created: Date;
 
     constructor() {
         this.code = '';
         this.created = new Date();
+        this.state = new GameState();
         // TODO: Should create a new Game State
-        this.state = null;
     }
 
     /**
@@ -91,10 +92,11 @@ export class GameSession {
      */
     public save(callback: () => void): void {
         let db = new DBConnector();
+        this.state.setSessionID(this.code);
 
         let queryStr: string = `INSERT INTO Games (code, created, state)
-         VALUES ('${this.code}','${this.getTimeStamp()}','${this.state}')`;
-        
+         VALUES ('${this.code}','${this.getTimeStamp()}','${this.state.toString()}')`;
+
         db.query( queryStr, (err: any, rows: any, fields: any) => {
             db.close();
             callback();
