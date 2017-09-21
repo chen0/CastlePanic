@@ -4,7 +4,6 @@ const htmlWebpackPlugin = require('html-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
 const path = require('path');
 const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 var cleanWebpack = new CleanWebpackPlugin(['dist'], {
   root: path.resolve(__dirname),
@@ -28,10 +27,6 @@ var htmlWebpack = new htmlWebpackPlugin({
 var uglifyJs = new webpack.optimize.UglifyJsPlugin({
   compress: { warnings: false }
 });
-
-/*var extractTextPlugin = new ExtractTextPlugin({
-  filename: "[name].css"
-}); */
 
 const resolver = {
   extensions: ['.ts','.tsx','.js','.html', '.css'],

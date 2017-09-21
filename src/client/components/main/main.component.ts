@@ -9,7 +9,6 @@ import template from './main.template.html';
 })
 export class MainComponent {
     public modalRef: BsModalRef;
-    private count: number = 1;
     constructor( @Inject(BsModalService) private modalService: BsModalService) {}
     
 }
