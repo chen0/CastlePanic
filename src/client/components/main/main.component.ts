@@ -1,4 +1,6 @@
-import {Component} from '@angular/core';
+import {Component, Inject, TemplateRef } from '@angular/core';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/modal-options.class';
 import template from './main.template.html';
 
 @Component({
@@ -6,5 +8,7 @@ import template from './main.template.html';
     template: template,
 })
 export class MainComponent {
-    private count: number = 1;
+    public modalRef: BsModalRef;
+    constructor( @Inject(BsModalService) private modalService: BsModalService) {}
+    
 }
