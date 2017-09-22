@@ -19,6 +19,7 @@ export class IndexComponent implements OnInit {
     public oldgame: Game;
     public sessionID: string;
     public errorMessage: string;
+    public nickName: string;
     public myStyle: object = {};
 
     constructor( 
@@ -33,15 +34,15 @@ export class IndexComponent implements OnInit {
      }
 
      public initSession() {
-         this.gameService.getGameSessionID()
-             .subscribe((game) => this.game = game); 
+        this.game = new Game('Oops, you have to enter a nickname first. '); 
      }
 
-     public createSession(template: TemplateRef<any>) {
-
-         this.gameService.getGameSessionID()
+     public createSession(template: TemplateRef<any>, name: string) {
+        
+         this.gameService.getGameSessionID(name)
              .subscribe((game) => this.game = game); 
 
+         this.modalRef.hide();
          this.modalRef = this.modalService.show(template);
      } 
 
@@ -50,7 +51,7 @@ export class IndexComponent implements OnInit {
         this.router.navigate(['/lobby', this.game.gameCode.toString()]);
     }
 
-    public toLobby(sessionID: string) {
+    public toLobby(sessionID: string, nickName: string) {
         this.modalRef.hide();
         this.router.navigate(['/lobby', sessionID]);
     }

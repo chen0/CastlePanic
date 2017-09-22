@@ -9,7 +9,7 @@
         <hr>
         <p>No sign up required, let's play the game. Simple</p>
         <div class="btn-group">
-          <button type="button" class="btn btn-primary" (click)="createSession(create)">Create a game session</button>
+          <button type="button" class="btn btn-primary" (click)="openModal(create_user)">Create a game session</button>
         </div>
         <div class="btn-group right">
           <button type="button" class="btn btn-primary" (click)="openModal(join)">Join a game session</button>
@@ -26,10 +26,26 @@
       </button>
     </div>
     <div class="modal-body">
-      <p>Here's your shareable code: <strong>{{game.gameCode}}</strong></p>
+      <p>Welcome {{nickName}}! Here's your shareable code: <strong>{{game.gameCode}}</strong></p>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-default" (click)="toNewLobby()">Create New Session</button>
+    </div>
+  </ng-template>
+
+  <ng-template #create_user>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Create a game session</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p>To begin the game, give yourself a nickname: </p>
+      <input class="form-control" #nickName (keyup.enter)="createSession(create, nickName.value)">
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" (click)="createSession(create, nickName.value)">Create New Session</button>
     </div>
   </ng-template>
 
@@ -41,11 +57,14 @@
       </button>
     </div>
     <div class="modal-body">
-      <p>Please enter you session code.</p>
+      <p>Give yourself a nickname.</p>
+      <input class="form-control" #nickName (keyup.enter)="toLobby(nickName.value)">
+      <p></p>
+      <p>Then, enter the session code. If you don't have it, ask your friend. </p>
       <input class="form-control" #sessionCode (keyup.enter)="toLobby(sessionCode.value)">
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-default" (click)="toLobby(sessionCode.value)">Join Lobby</button>
+      <button type="button" class="btn btn-default" (click)="toLobby(sessionCode.value, nickName.value)">Join Lobby</button>
     </div>
   </ng-template>
 </div>

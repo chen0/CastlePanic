@@ -12,10 +12,10 @@ export class GameSessionService {
     public handleErrorObservable: string;
     constructor(@Inject(Http) private http: Http) {}
 
-    public getGameSessionID(): Observable<Game> {
+    public getGameSessionID(name: string): Observable<Game> {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({headers: headers}); 
-        return this.http.post(this.url, JSON.stringify('getID'), options)
+        return this.http.post(this.url, JSON.stringify(name), options)
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error.json().error || 'Error'));
     }
