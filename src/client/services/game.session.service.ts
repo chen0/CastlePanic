@@ -15,7 +15,7 @@ export class GameSessionService {
     public getGameSessionID(name: string): Observable<Game> {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({headers: headers}); 
-        return this.http.post(this.url, JSON.stringify(name), options)
+        return this.http.post(this.url, JSON.stringify({name}), options)
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error.json().error || 'Error'));
     }

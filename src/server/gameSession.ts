@@ -1,18 +1,49 @@
 import * as _ from 'lodash';
 import niceware from 'niceware';
 import {DBConnector} from './database/database';
+import {GameState} from './gameState'; 
 
 export class GameSession {
 
+    public static gameCodeExists(gameCode: string, callback: (exists: boolean) => void): void {
+        let db = new DBConnector();
+        let queryStr = `SELECT COUNT(code) AS code_exists FROM Games WHERE code='${gameCode}';`;
+        db.query(queryStr, (err: any, rows: any, fields: any) => {
+            db.close();
+
+            let exists = _.get( _.head(rows), 'code_exists', 1);
+            if ( exists ) {
+                callback(true);
+            } else {
+                callback(false);
+            }
+        });
+    }
+
+    public static addUser(name: string, role: string, gameCode: string, callback: (success: boolean) => void) {
+        GameSession.gameCodeExists(gameCode, (exists: boolean): void =>  {
+            if ( exists ) {
+                let str = `INSERT INTO Users (name,game_code,role) VALUES ("${name}","${gameCode}","${role}");`;
+                let db = new DBConnector();
+                db.query(str, (err: any, rows: any, fields: any) => {
+                    db.close();
+                    callback(true);
+                });
+            } else {
+                    callback(false);
+            }
+        });
+    }
+
     private code: string;
-    private state: any;
+    private state: GameState;
     private created: Date;
 
     constructor() {
         this.code = '';
         this.created = new Date();
+        this.state = new GameState();
         // TODO: Should create a new Game State
-        this.state = null;
     }
 
     /**
@@ -61,10 +92,11 @@ export class GameSession {
      */
     public save(callback: () => void): void {
         let db = new DBConnector();
+        this.state.setSessionID(this.code);
 
         let queryStr: string = `INSERT INTO Games (code, created, state)
-         VALUES ('${this.code}','${this.getTimeStamp()}','${this.state}')`;
-        
+         VALUES ('${this.code}','${this.getTimeStamp()}','${this.state.toString()}')`;
+
         db.query( queryStr, (err: any, rows: any, fields: any) => {
             db.close();
             callback();
