@@ -54,7 +54,8 @@ const loaderList = [
 
 const serverConfig = {
   entry: {
-    server: [path.resolve(__dirname,'src/server/index.ts')]
+    server: [path.resolve(__dirname,'src/server/index.ts')],
+    test: [path.resolve(__dirname, 'src/server/test.main.ts')]
   },
   target: 'node',
   externals: [nodeExternals()],
