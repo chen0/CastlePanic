@@ -1,24 +1,24 @@
 
 export class GameState {
 
-	sessionID: string;
-	monster: any;
-	users: any;
+    private sessionID: string;
+    private monster: any;
+    private users: any;
 
-	constructor() {
+    constructor() {
 
-		this.sessionID = "123"; 
-		this.monster = ""; 
-		this.users = "";
+        this.sessionID = '123';
+        this.monster = '';
+        this.users = '';
 
-	}
+    }
 
-	public setSessionID(sessionid: string): void {
-		this.sessionID = sessionid;
-	}
+    public setSessionID(sessionid: string): void {
+        this.sessionID = sessionid;
+    }
 
-	public toString(): string {
-		return JSON.stringify(this);
-	}
+    public toString(): string {
+        return JSON.stringify(this);
+    }
 
 }
