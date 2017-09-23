@@ -12,6 +12,7 @@
     "@types/lodash": "^4.14.74",
     "body-parser": "^1.18.1",
     "express": "^4.15.4",
+    "json2typescript": "^1.0.4",
     "lodash": "^4.17.4",
     "mysql": "^2.14.1",
     "niceware": "^1.0.4",
@@ -38,6 +39,7 @@
   "scripts": {
     "build": "webpack",
     "start": "node ./dist/server.bundle.js",
+    "test": "node ./dist/test.bundle.js",
     "db:update": "scp ./src/server/database/tables.sql ubuntu@10.10.4.15:/home/ubuntu/tables.sql; ssh ubuntu@10.10.4.15 'mysql CastlePanicDB < tables.sql'"
   }
 }

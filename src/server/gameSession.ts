@@ -1,7 +1,10 @@
 import * as _ from 'lodash';
 import niceware from 'niceware';
 import {DBConnector} from './database/database';
-import {GameState} from './gameState'; 
+import {GameState} from './gameState';
+import {Goblin} from './monsters/goblin';
+import {Monster} from './monsters/monster';
+import {Troll} from './monsters/troll';
 
 export class GameSession {
 
@@ -35,6 +38,31 @@ export class GameSession {
         });
     }
 
+    /**
+     * Given a game code this will query a gameSession and parse the gameState.
+     * 
+     * @static
+     * @param {string} gameCode - code of session to retrieve
+     * @param {(session: GameSession) => void} callback - game session
+     * @memberof GameSession
+     */
+    public static getSession(gameCode: string, callback: (session: GameSession) => void) {
+        let str = `SELECT state, created FROM Games WHERE code='${gameCode}';`;
+        let db = new DBConnector();
+        db.query(str, (err: any, rows: any, fields: any) => {
+            db.close();
+            let row1 = _.head(rows);
+            let state = _.get( row1, 'state', '');
+            let created = _.get(row1, 'created', '');
+
+            let gameState = GameState.parse(state);
+            let session = new GameSession();
+
+            session.setAttributes(gameCode, created, gameState);
+            callback(session);
+        });
+    }
+
     private code: string;
     private state: GameState;
     private created: Date;
@@ -43,7 +71,30 @@ export class GameSession {
         this.code = '';
         this.created = new Date();
         this.state = new GameState();
-        // TODO: Should create a new Game State
+    }
+
+    /**
+     * Sets the following attributes of the gameSession
+     * 
+     * @param {string} code     - game code of session
+     * @param {string} created  - date session was created
+     * @param {GameState} state - state of the game
+     * @memberof GameSession
+     */
+    public setAttributes(code: string, created: string, state: GameState) {
+        this.code = code;
+        this.created = new Date(created);
+        this.state = state;
+    }
+
+    /**
+     * Get the game state
+     * 
+     * @returns {GameState} 
+     * @memberof GameSession
+     */
+    public getState(): GameState {
+        return this.state;
     }
 
     /**
@@ -65,7 +116,7 @@ export class GameSession {
     public generateCode(callback: () => void ): void {
 
         // generate memorable code
-        let word: string = niceware.generatePassphrase(2);
+        let word: string = niceware.generatePassphrase(2)[0];
 
         let db = new DBConnector();
 
