@@ -3,6 +3,11 @@ declare module '*.html' {
     export default template;
 }
 
+declare module '*.css' {
+    const template: string;
+    export default template;
+}
+
 declare module 'niceware' {
     const content: any;
     function generatePassphrase(bytes: number): string[];
