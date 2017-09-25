@@ -34,7 +34,15 @@ export class DBConnector {
     }
 
     public query(query: string, callback: (err: mysql.IError , rows: any, fields: mysql.FieldType ) => void ) {
-        this.connection.query( query, callback);
+        this.connection.query( query, (err: mysql.IError, rows: any, fields: mysql.FieldType) => {
+
+            // Always display sql errors if they exist
+            if ( err !== null) {
+                console.error(err);
+            }
+            
+            callback(err, rows, fields);
+        });
     }
 
     public close() {

@@ -17,6 +17,7 @@
     "css-loader": "^0.28.7",
     "express": "^4.15.4",
     "extract-text-webpack-plugin": "2.0.0-beta.4",
+    "json2typescript": "^1.0.4",
     "lodash": "^4.17.4",
     "mysql": "^2.14.1",
     "ngx-bootstrap": "^1.9.3",
@@ -46,6 +47,7 @@
   "scripts": {
     "build": "webpack",
     "start": "node ./dist/server.bundle.js",
+    "test": "node ./dist/test.bundle.js",
     "db:update": "scp ./src/server/database/tables.sql ubuntu@10.10.4.15:/home/ubuntu/tables.sql; ssh ubuntu@10.10.4.15 'mysql CastlePanicDB < tables.sql'"
   }
 }
