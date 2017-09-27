@@ -34,7 +34,30 @@ export class GameSession {
             }
         });
     }
+    
+    /**
+     * Queries the DB and retrieves all names associated with the gameCode and the role associated with the parameter name
+     */
+    public static getLobby(gameCode: string, name: string, callback: (names: string[], role: string) => void) {
+        let queryStr = `select name, role from Users where game_code='${gameCode}';`;
+        let db = new DBConnector();
 
+        db.query(queryStr, (err: any, rows: any, fields: any) => {
+            db.close();
+            let names: string[] = [];
+            let role: string = '';
+
+            _.forEach(rows, (user) => {
+                let getName = _.get(user, 'name', '');
+                names.push(getName);
+                if(_.isEqual(name, getName)) {
+                    role = _.get(user, 'role', '');
+                }
+            });
+            callback(names, role);
+        });
+    }
+    
     private code: string;
     private state: GameState;
     private created: Date;
