@@ -77,5 +77,4 @@ export class GameState {
         let json = converter.serialize(this);
         return JSON.stringify(json);
     }
-
 }
