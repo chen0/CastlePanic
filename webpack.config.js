@@ -29,7 +29,7 @@ var uglifyJs = new webpack.optimize.UglifyJsPlugin({
 });
 
 const resolver = {
-  extensions: ['.ts','.tsx','.js','.html'],
+  extensions: ['.ts','.tsx','.js','.html', '.css'],
   modules: ['src','node_modules']
 }
 
@@ -49,12 +49,18 @@ const loaderList = [
     test: /\.html$/,
     exclude: /node_modules/,
     loader: 'html-loader?exportAsEs6Default'
-  }
+  }, 
+
+  {
+   test: /\.css$/,
+   loaders: ['to-string-loader', 'css-loader']
+  }, 
 ]
 
 const serverConfig = {
   entry: {
-    server: [path.resolve(__dirname,'src/server/index.ts')]
+    server: [path.resolve(__dirname,'src/server/index.ts')],
+    test: [path.resolve(__dirname, 'src/server/test.main.ts')]
   },
   target: 'node',
   externals: [nodeExternals()],
@@ -87,7 +93,9 @@ const clientConfig = {
   },
   resolve: resolver,
   module: {
+
     loaders: loaderList
+
   },
   plugins: [
     cleanWebpack,

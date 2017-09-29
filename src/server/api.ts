@@ -1,6 +1,6 @@
 import * as express from 'express';
 import * as _ from 'lodash';
-import {GameSession} from './gameSession';
+import { GameSession } from './gameSession';
 import Server from './server';
 
 export class Api {
@@ -14,7 +14,8 @@ export class Api {
     }
 
     /**
-     * Handles a request to create a new game session and returns a json response containing the gameCode
+     * Handles a request to create a new game session and returns a json response containing the gameCode.
+     * Request json should contain { name } and response contains { gameCode }
      *
      * @private
      * @param {express.Request} request
@@ -23,15 +24,22 @@ export class Api {
      */
     private newGame(request: express.Request, response: express.Response): void {
         let gameSession = new GameSession();
-        
+
+        let name = _.get(request, 'body.name', '');
+
         // creates session code and saves session
-        gameSession.generateCode( () => {
-            
-            // TODO: should probably add the current user to gameSession
-            let data = {
-                gameCode: gameSession.getCode()
-            };
-            response.json(data);
+        gameSession.generateCode(() => {
+
+            let gameCode = gameSession.getCode();
+
+            // if name is provided add User as owner of game session
+            if ( !_.isEqual(name, '') ) {
+                GameSession.addUser(name, 'owner', gameCode, (success: boolean) => {
+                    response.json( {gameCode} );
+                });
+            } else {
+                response.json( {gameCode} );
+            }
         });
     }
 
@@ -41,12 +49,11 @@ export class Api {
      * Returns boolean of success of joining game
      */
     private joinGame(request: express.Request, response: express.Response): void {
-        let name = _.get( request, 'body.name', '');
-        let gameCode = _.get( request, 'body.gameCode', '');
-        
+        let name = _.get(request, 'body.name', '');
+        let gameCode = _.get(request, 'body.gameCode', '');
         if (!_.isEqual(name, '') && !_.isEqual(gameCode, '')) {
             GameSession.addUser(name, 'player', gameCode, (success: boolean) => {
-                response.json({success});
+                response.json({ success });
             });
         } else {
             let data = {
@@ -69,7 +76,7 @@ export class Api {
         if (!_.isEqual(name, '') && (!_.isEqual(gameCode, ''))) {
             GameSession.getLobby(gameCode, name, (names: string[], role: string) => {
                 let data = {
-                    "Users": names,
+                    Users: names,
                     role
                 };
                 response.json(data);
