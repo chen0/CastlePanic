@@ -14,21 +14,20 @@ import { RedKnight } from './redknight';
 
 
 export namespace CardTests {
-/*
+
     export function start() {
         console.info('Card Tests');
 
         result ('Card Serialization', cardSerialization);
 		result ('Draw Card', drawCard);
-		result ('Used Cards', usedCard);
 		
     }
 
     function result( title: string, testCase: () => boolean) {
         console.info(`${title}: ${testCase() ? '\x1b[32m Passed' : '\x1b[31m Failed'}\x1b[0m`);
     }
-	*/
-/*
+
+
     function cardSerialization(): boolean {
         let state = new GameState();
         state.getCards().push( new GreenSwordsman() );
@@ -40,8 +39,8 @@ export namespace CardTests {
 
         return card instanceof GreenSwordsman;
     }
-*/	
-/*
+	
+
 	function drawCard(): boolean {
 		let state = new GameState();
         state.getCards().push( new GreenSwordsman() );
@@ -49,27 +48,11 @@ export namespace CardTests {
         let str = state.toString();
         let newState = GameState.parse( str );
 
-        let card = newState.drawCards();
+        let card = newState.drawCard();
 		return card instanceof BlueSwordsman;
 		
 	}
-*/
-/*	function usedCard(): boolean {
-		let state = new GameState();
-		let usedCards = [];
-        state.getCards().push( new GreenSwordsman() );
-        state.getCards().push( new BlueSwordsman() );
-        let str = state.toString();
-        let newState = GameState.parse( str );
 
-        let card = newState.drawCards();
-		usedCards.push(card);
-		let card = newState.drawCards();
-		usedCards.push(card);
-		return usedCards instanceof [BlueSwordsman, GreenSwordsman];
-		
-	}
-*/
 /*	
 	function deckRemaining(): boolean {
 		let state = new GameState();

@@ -128,50 +128,5 @@ export namespace CardToolkit {
         }
         return typedCards;
     }
-/*	This is my idea for drawing cards/discarding them. I am bad at coding and also don't know how the player class works (as it is not complete yet), but here is an idea how to do it
-	ALSO NOTE THAT I AM UNSURE WHERE THE CARD ARRAY IS BEING STORED. I am unsure where to pop from, so I'm just doing pop.card(). 
-	Obviously we need to build a pop function in the place where the array of cards is being stored.
-	
-	Actually, I had to rewrite this function. We need the player to be the one to draw the card now that I've thought about it. Literally all I can do here is pop the card off the top and return it.
-	
-	
-	export function drawCards(cards: Card[]): Card {
-		return pop.card();
-	}
-	
-	This is a hella rudimentary function that probably won't work. This is just an idea on how to handle the idea of a discard pile
-	NOTE: We can easily do this by just reshuffling the standard deck each time we run out. Yeah, we'll have issues with cards being duplicated but w/e. 
-	Up to the group how we handle it.
-	All this would do would be to push the discarded card to the top (0th position) of the discard array.
-	I'm not making the function to reshuffle the discard pile until we know we need it for sure.
-	
-	export function discardPile(card: Card[]): Card[] {
-	
-	}
-	
-	
-*/
 
-	export function drawCards(cards:Card[]): Card{
-//		let cardDrawn: Card = undefined;
-//		cardDrawn = cards.pop();
-		return cards.shift();
-	}
-	//actually, you can use the above function to add cards drawn to the discard pile, too.
-	//just call cardToAdd = deck.push(deck.drawCards); where cardToAdd is a card that is being placed in the player's hand.
-	
-	
-	//If you *need* to have a different (altho entirely redundant) function to add cards to a discard array, here it
-	//is. Just call this function and push the cards onto the top of the discardCards array.
-	export function discardPile(cards:Card[]): Card{
-		return cards.shift();
-	}
-	
-	//This is required to be a different function because it allows the database to keep track of the cards 
-	//left in the deck. NOTE THAT THIS SHOULD HONESTLY BE HANDLED IN THE DATABASE ITSELF. Just do the same 
-	//thing as here, only with the deck array being popped.
-	export function deckReturned(cards:Card[]): Card[]{
-		cards.shift();
-		return cards;
-	}
 }
