@@ -79,7 +79,7 @@ export class GameState {
     }
 	
 	public drawCard(): Card {
-		let drawnCard: Card = this.cards.pop();;
+		let drawnCard: Card = this.cards.pop();
 		if(_.isEqual(undefined, drawnCard)){
 			this.cards = CardToolkit.getCards();
 			return this.cards.pop();
