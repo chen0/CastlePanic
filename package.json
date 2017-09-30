@@ -35,6 +35,7 @@
     "@types/node": "^8.0.25",
     "clean-webpack-plugin": "^0.1.16",
     "copy-webpack-plugin": "^4.0.1",
+    "fork-ts-checker-webpack-plugin": "^0.2.8",
     "html-loader": "^0.5.1",
     "html-webpack-plugin": "^2.30.1",
     "ts-loader": "^2.3.4",
@@ -45,7 +46,10 @@
     "webpack-node-externals": "^1.6.0"
   },
   "scripts": {
-    "build": "webpack",
+    "build": "webpack --config webpack/webpack.fresh.js",
+    "build:client": "webpack --config webpack/webpack.client.js",
+    "build:server": "webpack --config webpack/webpack.server.js",
+    "build:test": "webpack --config webpack/webpack.test.js",
     "start": "node ./dist/server.bundle.js",
     "test": "node ./dist/test.bundle.js",
     "db:update": "scp ./src/server/database/tables.sql ubuntu@10.10.4.15:/home/ubuntu/tables.sql; ssh ubuntu@10.10.4.15 'mysql CastlePanicDB < tables.sql'"

@@ -12,7 +12,7 @@ var cleanWebpack = new CleanWebpackPlugin(['dist'], {
 });
 
 var copyWebpack = new CopyWebpackPlugin([
-  { from: path.resolve(__dirname,'src/client/styles.css'), to: path.resolve(__dirname,'dist/public')}
+  { from: path.resolve(__dirname,'../src/client/styles.css'), to: path.resolve(__dirname,'../dist/public')}
 ]);
 
 var contextReplacement = new webpack.ContextReplacementPlugin(
@@ -21,7 +21,7 @@ var contextReplacement = new webpack.ContextReplacementPlugin(
 );
 
 var htmlWebpack = new htmlWebpackPlugin({
-  template: path.resolve(__dirname,'src/client/index.ejs')
+  template: path.resolve(__dirname,'../src/client/index.ejs')
 });
 
 var uglifyJs = new webpack.optimize.UglifyJsPlugin({
@@ -57,10 +57,9 @@ const loaderList = [
   }, 
 ]
 
-const serverConfig = {
+const server = {
   entry: {
-    server: [path.resolve(__dirname,'src/server/index.ts')],
-    test: [path.resolve(__dirname, 'src/server/test.main.ts')]
+    server: [path.resolve(__dirname,'../src/server/index.ts')]
   },
   target: 'node',
   externals: [nodeExternals()],
@@ -70,7 +69,7 @@ const serverConfig = {
   },
   output: {
     filename: '[name].bundle.js',
-    path: path.resolve('dist')
+    path: path.resolve(__dirname, '../dist')
   },
   resolve: resolver,
   module: {
@@ -79,9 +78,30 @@ const serverConfig = {
   plugins: []
 };
 
-const clientConfig = {
+const test = {
   entry: {
-    client: [path.resolve(__dirname,'src/client/index.ts')]
+    test: [path.resolve(__dirname, '../src/server/test.main.ts')]
+  },
+  target: 'node',
+  externals: [nodeExternals()],
+  node: {
+    __dirname: false,
+    __filename: false,
+  },
+  output: {
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, '../dist')
+  },
+  resolve: resolver,
+  module: {
+    loaders: loaderList
+  },
+  plugins: []
+};
+
+var client = {
+  entry: {
+    client: [path.resolve(__dirname,'../src/client/index.ts')]
   },
   target: 'web',
   node: {
@@ -89,7 +109,7 @@ const clientConfig = {
   },
   output: {
     filename: '[name].bundle.js',
-    path: path.resolve('dist/public')
+    path: path.resolve('../dist/public')
   },
   resolve: resolver,
   module: {
@@ -98,7 +118,6 @@ const clientConfig = {
 
   },
   plugins: [
-    cleanWebpack,
     copyWebpack,
     htmlWebpack,
     contextReplacement/* ,
@@ -107,4 +126,6 @@ const clientConfig = {
 
 };
 
-module.exports = [ serverConfig, clientConfig ];
+var config = { server, client, test};
+var plugins = { cleanWebpack };
+module.exports = { config, plugins };
