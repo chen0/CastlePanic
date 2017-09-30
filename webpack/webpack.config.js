@@ -1,5 +1,6 @@
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const ForkTSCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const htmlWebpackPlugin = require('html-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
 const path = require('path');
@@ -20,6 +21,8 @@ var contextReplacement = new webpack.ContextReplacementPlugin(
   false
 );
 
+var forkTsChecker = new ForkTSCheckerWebpackPlugin();
+
 var htmlWebpack = new htmlWebpackPlugin({
   template: path.resolve(__dirname,'../src/client/index.ejs')
 });
@@ -36,14 +39,17 @@ const resolver = {
 const loaderList = [
   { 
     test: /\.tsx?$/, 
-    loaders: ['ts-loader'], 
-    include: path.resolve('src')
+    loader: 'ts-loader', 
+    include: path.resolve(__dirname,'../src'),
+    options: {
+      transpileOnly: true
+    }
   },
   {
     test: /\.tsx?$/,
     enforce: 'pre',
     loader: 'tslint-loader',
-    exclude: path.resolve(__dirname,'node_modules/*')
+    exclude: path.resolve(__dirname,'../node_modules/*')
   },
   {
     test: /\.html$/,
@@ -75,7 +81,9 @@ const server = {
   module: {
     loaders: loaderList
   },
-  plugins: []
+  plugins: [
+    forkTsChecker
+  ]
 };
 
 const test = {
@@ -96,7 +104,9 @@ const test = {
   module: {
     loaders: loaderList
   },
-  plugins: []
+  plugins: [
+    forkTsChecker
+  ]
 };
 
 var client = {
@@ -119,6 +129,7 @@ var client = {
   },
   plugins: [
     copyWebpack,
+    forkTsChecker,
     htmlWebpack,
     contextReplacement/* ,
     uglifyJs */
