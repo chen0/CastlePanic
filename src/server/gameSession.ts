@@ -1,10 +1,10 @@
 import * as _ from 'lodash';
 import niceware from 'niceware';
-import {DBConnector} from './database/database';
-import {GameState} from './gameState';
-import {Goblin} from './monsters/goblin';
-import {Monster} from './monsters/monster';
-import {Troll} from './monsters/troll';
+import { DBConnector } from './database/database';
+import { GameState } from './gameState';
+import { Goblin } from './monsters/goblin';
+import { Monster } from './monsters/monster';
+import { Troll } from './monsters/troll';
 
 export class GameSession {
 
@@ -14,8 +14,8 @@ export class GameSession {
         db.query(queryStr, (err: any, rows: any, fields: any) => {
             db.close();
 
-            let exists = _.get( _.head(rows), 'code_exists', 1);
-            if ( exists ) {
+            let exists = _.get(_.head(rows), 'code_exists', 1);
+            if (exists) {
                 callback(true);
             } else {
                 callback(false);
@@ -24,7 +24,7 @@ export class GameSession {
     }
 
     public static addUser(name: string, role: string, gameCode: string, callback: (success: boolean) => void) {
-        GameSession.gameCodeExists(gameCode, (exists: boolean): void =>  {
+        GameSession.gameCodeExists(gameCode, (exists: boolean): void => {
             if ( exists ) {
                 let str = `INSERT INTO Users (name,game_code,role) VALUES ("${name}","${gameCode}","${role}");`;
                 let db = new DBConnector();
@@ -33,7 +33,7 @@ export class GameSession {
                     callback(true);
                 });
             } else {
-                    callback(false);
+                callback(false);
             }
         });
     }
@@ -62,6 +62,26 @@ export class GameSession {
     }
     
     /**
+     * Checks whether or not the name already exists in the game Session.
+     * 
+     * @static
+     * @param {string} name                         - name to check
+     * @param {string} gameCode                     - gameCode of game session
+     * @param {(exists: boolean) => void} callback  - true if name exists, false if it does not
+     * @memberof GameSession
+     */
+    public static userExists(name: string, gameCode: string, callback: (exists: boolean) => void) {
+        let str = `SELECT COUNT(name) AS name_exists FROM Users
+            WHERE name='${name}' AND game_code='${gameCode}';`;
+        let db = new DBConnector();
+        db.query(str, (err: any, rows: any, fields: any) => {
+            db.close();
+            let numMatches = _.get(_.head(rows), 'name_exists', 1);
+            callback(numMatches > 0);
+        });
+    }
+
+    /**
      * Given a game code this will query a gameSession and parse the gameState.
      * 
      * @static
@@ -75,7 +95,7 @@ export class GameSession {
         db.query(str, (err: any, rows: any, fields: any) => {
             db.close();
             let row1 = _.head(rows);
-            let state = _.get( row1, 'state', '');
+            let state = _.get(row1, 'state', '');
             let created = _.get(row1, 'created', '');
 
             let gameState = GameState.parse(state);
@@ -136,7 +156,7 @@ export class GameSession {
      * @param {() => void} callback     - function that gets called after the game session is saved in the database
      * @memberof GameSession
      */
-    public generateCode(callback: () => void ): void {
+    public generateCode(callback: () => void): void {
 
         // generate memorable code
         let word: string = niceware.generatePassphrase(2)[0];
@@ -145,11 +165,11 @@ export class GameSession {
 
         // get the number of times this code exists in the database
         let queryStr = `SELECT COUNT(code) AS code_exists FROM Games WHERE code='${word}'`;
-        db.query( queryStr, (err: any, rows: any, fields: any) => {
+        db.query(queryStr, (err: any, rows: any, fields: any) => {
             db.close();
 
-            let exists = _.get( _.head(rows), 'code_exists', 1);
-            if ( exists ) {
+            let exists = _.get(_.head(rows), 'code_exists', 1);
+            if (exists) {
                 this.generateCode(callback);
             } else {
                 this.code = word;
@@ -171,7 +191,7 @@ export class GameSession {
         let queryStr: string = `INSERT INTO Games (code, created, state)
          VALUES ('${this.code}','${this.getTimeStamp()}','${this.state.toString()}')`;
 
-        db.query( queryStr, (err: any, rows: any, fields: any) => {
+        db.query(queryStr, (err: any, rows: any, fields: any) => {
             db.close();
             callback();
         });

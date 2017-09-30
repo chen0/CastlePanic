@@ -52,8 +52,14 @@ export class Api {
         let name = _.get(request, 'body.name', '');
         let gameCode = _.get(request, 'body.gameCode', '');
         if (!_.isEqual(name, '') && !_.isEqual(gameCode, '')) {
-            GameSession.addUser(name, 'player', gameCode, (success: boolean) => {
-                response.json({ success });
+            GameSession.userExists(name, gameCode, (exists: boolean) => {
+                if (!exists) {
+                    GameSession.addUser(name, 'player', gameCode, (success: boolean) => {
+                        response.json({ success });
+                    });
+                } else {
+                    response.json({success: false, error: 'name exists'});
+                }
             });
         } else {
             let data = {
