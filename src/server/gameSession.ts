@@ -53,7 +53,7 @@ export class GameSession {
             _.forEach(rows, (user) => {
                 let getName = _.get(user, 'name', '');
                 names.push(getName);
-                if(_.isEqual(name, getName)) {
+                if (_.isEqual(name, getName)) {
                     role = _.get(user, 'role', '');
                 }
             });

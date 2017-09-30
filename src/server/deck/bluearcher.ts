@@ -1,10 +1,10 @@
-import {Card} from './card';
-import {Position, Ring, Color} from '../position';
+import { Color, Position, Ring } from '../position';
+import { Card } from './card';
 
-export class BlueArcher extends Card{
-	
-	constructor(){
-		super('BlueArcher', Ring.ARCHER, Color.BLUE);
-	}
+export class BlueArcher extends Card {
+
+    constructor() {
+        super('BlueArcher', Ring.ARCHER, Color.BLUE);
+    }
 
 }
