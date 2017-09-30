@@ -2,6 +2,7 @@ import { JsonConvert, JsonObject, JsonProperty,  } from 'json2typescript';
 import * as _ from 'lodash';
 import { Monster } from './monsters/monster';
 import { MonsterToolkit } from './monsters/toolkit';
+import {GamePlayers} from './gamePlayers'; 
 
 @JsonObject
 export class GameState {
@@ -34,27 +35,47 @@ export class GameState {
     @JsonProperty('monsters', [Monster])
     private monsters: Monster[] = [];
 
-    @JsonProperty('users', String)
-    private users: string = '';
+    @JsonProperty('users', GamePlayers)
+    private users: GamePlayers;
 
     constructor() {
         this.sessionId = '123';
         this.monsters = [];
-        this.users = '';
-
     }
 
     public setSessionID(sessionid: string): void {
         this.sessionId = sessionid;
+        this.createPlayerClass();
     }
 
     public getSessionID(): string {
         return this.sessionId;
     }
 
+    public createPlayerClass(): void{
+        this.users = new GamePlayers(this.sessionId);
+    }
+
+    public setOwner(userid: string): void {
+        this.users.addOwner(userid);
+    }
+    
+    public addPlayers(userid: string): void{
+        this.users.addPlayers(userid);
+    }
+
+    public getOwner(): string {
+        return this.users.getOwner();
+    }
+
+    public getPlayers(): string[] {
+        return this.users.getPlayers();
+    }
+
     public getMonsters(): Monster[] {
         return this.monsters;
     }
+
 
     /**
      * Should be called at the begining of the Game to place all objects into their starting positions.
