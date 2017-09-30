@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "tbd",
   "main": "index.js",
+  "license": "MIT",
   "dependencies": {
     "@angular/common": "^4.3.6",
     "@angular/core": "^4.3.6",

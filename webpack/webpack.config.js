@@ -13,7 +13,8 @@ var cleanWebpack = new CleanWebpackPlugin(['dist'], {
 });
 
 var copyWebpack = new CopyWebpackPlugin([
-  { from: path.resolve(__dirname,'../src/client/styles.css'), to: path.resolve(__dirname,'../dist/public')}
+  { from: path.resolve(__dirname,'../src/client/styles.css'), to: path.resolve(__dirname,'../dist/public')},
+  { from: path.resolve(__dirname, '../src/resources/**/*'), to: path.resolve(__dirname,'../dist/public/[name].[ext]')}
 ]);
 
 var contextReplacement = new webpack.ContextReplacementPlugin(
@@ -119,7 +120,7 @@ var client = {
   },
   output: {
     filename: '[name].bundle.js',
-    path: path.resolve('../dist/public')
+    path: path.resolve(__dirname,'../dist/public')
   },
   resolve: resolver,
   module: {
