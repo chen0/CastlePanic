@@ -1,10 +1,10 @@
 import * as _ from 'lodash';
 import {DBConnector} from './database/database';
 import {DatabaseTest} from './database/test';
+import {CardTests} from './deck/cardtests';
 import {GameSession} from './gameSession';
 import {GameState} from './gameState';
 import {MonsterTests} from './monsters/test';
-import {CardTests} from './deck/cardtests';
 import {ApiTest} from './testing/api.test';
 
 console.info('Starting Tests\n');
@@ -16,7 +16,7 @@ let dbTest = new DatabaseTest( () => {
     
     MonsterTests.start();
     
-    console.log('\n');
+    console.info('\n');
     CardTests.start();
 
     console.info('\n');
