@@ -1,5 +1,6 @@
 import {Component, Inject, OnInit, TemplateRef, ViewEncapsulation } from '@angular/core';
 import {Router} from '@angular/router';
+import { Alert, AlertCenterComponent, AlertCenterService, AlertType } from 'ng2-alert-center'; 
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/modal-options.class';
 import { Observable } from 'rxjs';
@@ -16,16 +17,17 @@ import indexTemplate from './index.template.html';
 export class IndexComponent implements OnInit {
     public modalRef: BsModalRef;
     public game: Game;
-    public oldgame: Game;
     public sessionID: string;
-    public errorMessage: string;
+    public checkID: any;
+    public checkID2: any;
     public nickName: string;
     public myStyle: object = {};
 
     constructor( 
         @Inject(GameSessionService) private gameService: GameSessionService, 
         @Inject(BsModalService) private modalService: BsModalService, 
-        @Inject(Router) private router: Router) {
+        @Inject(Router) private router: Router, 
+        @Inject(AlertCenterService) private service: AlertCenterService) {
 
     }
  
@@ -33,27 +35,71 @@ export class IndexComponent implements OnInit {
         this.modalRef = this.modalService.show(template);
      }
 
-     public initSession() {
-        this.game = new Game('Oops, you have to enter a nickname first. '); 
-     }
+    public initSession() {
+        this.game = new Game('Error, Please refreash the browser', 'error'); 
+    }
 
-     public createSession(template: TemplateRef<any>, name: string) {
+    public createSession(template: TemplateRef<any>, name: any) {
         
-         this.gameService.getGameSessionID(name)
-             .subscribe((game) => this.game = game); 
+        if (name === '') {
+            const alert = Alert.create(AlertType.WARNING, '<b>Please enter a nickname. </b>', 5000);
+            this.service.alert(alert);
+        } else {
 
-         this.modalRef.hide();
-         this.modalRef = this.modalService.show(template);
-     } 
+            this.gameService.getGameSessionID(name)
+                .subscribe((game) => {
+                    this.game = game; 
+                    this.nickName = name; 
+                }); 
+
+            this.modalRef.hide();
+            this.modalRef = this.modalService.show(template);
+
+        }
+    } 
 
     public toNewLobby() {
         this.modalRef.hide();
-        this.router.navigate(['/lobby', this.game.gameCode.toString()]);
+        this.router.navigate(['/lobby', {sessionid: this.game.gameCode.toString(), nickname: this.nickName}]);
     }
 
-    public toLobby(sessionID: string, nickName: string) {
-        this.modalRef.hide();
-        this.router.navigate(['/lobby', sessionID]);
+    public toLobby(sessionID: string, name: string) {
+        if (name === '' || sessionID === '') {
+            const alert = Alert.create(AlertType.WARNING, '<b>Both fields are required.</b>', 5000);
+            this.service.alert(alert);
+        } else {
+        this.gameService.checkUserID(sessionID, name)
+            .subscribe(
+                (checkID) => {
+                    this.checkID = checkID;
+                    if (this.checkID.success) {
+
+                        const alert = Alert.create
+                        (AlertType.DANGER, '<b>OOPS, </b>This nickname is already been taken for this game session.',
+                        5000);
+
+                        this.service.alert(alert);
+                    } else {
+                        this.gameService.checkGameCode(sessionID)
+                            .subscribe(
+                                (checkID2) => {
+                                    this.checkID2 = checkID2;
+                                    if (!this.checkID2.success) {
+                                        const alert = Alert.create
+                                        (AlertType.DANGER, '<b>HMMM, </b>This game session does not exist.', 5000);
+                                        this.service.alert(alert);
+                                    } else {
+                                        this.gameService.joinGame(sessionID, name)
+                                            .subscribe(
+                                                () => {
+                                                    this.modalRef.hide();
+                                                    this.router.navigate(['/lobby', sessionID, name]);
+                                                }); 
+                                    }
+                            });
+                    }
+            }); 
+        }
     }
 
     public ngOnInit(): void {
@@ -69,5 +115,4 @@ export class IndexComponent implements OnInit {
             'bottom': 0,
         };
     }
-
 }

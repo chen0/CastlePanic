@@ -4,6 +4,7 @@ import {DatabaseTest} from './database/test';
 import {GameSession} from './gameSession';
 import {GameState} from './gameState';
 import {MonsterTests} from './monsters/test';
+import {CardTests} from './deck/cardtests';
 import {ApiTest} from './testing/api.test';
 
 console.info('Starting Tests\n');
@@ -14,6 +15,9 @@ let dbTest = new DatabaseTest( () => {
     console.info('\n');
     
     MonsterTests.start();
+    
+    console.log('\n');
+    CardTests.start();
 
     console.info('\n');
     let apiTest = new ApiTest( () => {

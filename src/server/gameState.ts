@@ -2,6 +2,8 @@ import { JsonConvert, JsonObject, JsonProperty,  } from 'json2typescript';
 import * as _ from 'lodash';
 import { Monster } from './monsters/monster';
 import { MonsterToolkit } from './monsters/toolkit';
+import { CardToolkit} from './deck/cardtoolkit';
+import { Card } from './deck/card';
 
 @JsonObject
 export class GameState {
@@ -25,6 +27,7 @@ export class GameState {
 
         // Convert each element in Monster array into their correct types
         obj.monsters = MonsterToolkit.assignMonsterTypes(obj.monsters);
+		obj.cards = CardToolkit.assignCardTypes(obj.cards);
         return obj;
     }
 
@@ -36,11 +39,15 @@ export class GameState {
 
     @JsonProperty('users', String)
     private users: string = '';
+	
+	@JsonProperty('cards', [Card])
+	private cards: Card[] = [];
 
     constructor() {
         this.sessionId = '123';
         this.monsters = [];
         this.users = '';
+		this.cards = [];
 
     }
 
@@ -55,6 +62,10 @@ export class GameState {
     public getMonsters(): Monster[] {
         return this.monsters;
     }
+	
+	public getCards(): Card[] {
+		return this.cards;
+	}
 
     /**
      * Should be called at the begining of the Game to place all objects into their starting positions.
@@ -64,7 +75,17 @@ export class GameState {
     public initializeGame() {
 
         this.monsters = MonsterToolkit.getMonsters();
+		this.cards = CardToolkit.getCards();
     }
+	
+	public drawCard(): Card {
+		let drawnCard: Card = this.cards.pop();
+		if(_.isEqual(undefined, drawnCard)){
+			this.cards = CardToolkit.getCards();
+			return this.cards.pop();
+		}
+		return drawnCard;
+	}
 
     /**
      * Converts GameState object into a string that can be stored in a database
@@ -77,5 +98,4 @@ export class GameState {
         let json = converter.serialize(this);
         return JSON.stringify(json);
     }
-
 }

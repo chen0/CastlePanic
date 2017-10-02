@@ -2,6 +2,12 @@
 # yarn lockfile v1
 
 
+"@angular/animations@^4.4.3":
+  version "4.4.3"
+  resolved "https://registry.yarnpkg.com/@angular/animations/-/animations-4.4.3.tgz#396c4a5bfb22847f9e458245ba995f9c130c0cf3"
+  dependencies:
+    tslib "^1.7.1"
+
 "@angular/common@^4.3.6":
   version "4.3.6"
   resolved "https://registry.yarnpkg.com/@angular/common/-/common-4.3.6.tgz#ed37e9307c7506dd834797c1a6cf675e52b5b6ee"
@@ -1602,6 +1608,10 @@ https-browserify@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/https-browserify/-/https-browserify-0.0.1.tgz#3f91365cabe60b77ed0ebba24b454e3e09d95a82"
 
+iconv-lite@0.4.19:
+  version "0.4.19"
+  resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.19.tgz#f7468f60135f5e5dad3399c0a81be9a1603a082b"
+
 icss-replace-symbols@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/icss-replace-symbols/-/icss-replace-symbols-1.1.0.tgz#06ea6f83679a7749e386cfe1fe812ae5db223ded"
@@ -1611,10 +1621,6 @@ icss-utils@^2.1.0:
   resolved "https://registry.yarnpkg.com/icss-utils/-/icss-utils-2.1.0.tgz#83f0a0ec378bf3246178b6c2ad9136f135b1c962"
   dependencies:
     postcss "^6.0.1"
-
-iconv-lite@0.4.19:
-  version "0.4.19"
-  resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.19.tgz#f7468f60135f5e5dad3399c0a81be9a1603a082b"
 
 ieee754@^1.1.4:
   version "1.1.8"
@@ -1768,6 +1774,10 @@ is-regex@^1.0.4:
   resolved "https://registry.yarnpkg.com/is-regex/-/is-regex-1.0.4.tgz#5517489b547091b0930e095654ced25ee97e9491"
   dependencies:
     has "^1.0.1"
+
+is-retina@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/is-retina/-/is-retina-1.0.3.tgz#d7401b286bea2ae37f62477588de504d0b8647e3"
 
 is-stream@^1.1.0:
   version "1.1.0"
@@ -2114,6 +2124,17 @@ ncname@1.0.x:
 negotiator@0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
+
+ng2-alert-center@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/ng2-alert-center/-/ng2-alert-center-0.5.1.tgz#54f546e34b12a1ff36d78781042d612638e7aac1"
+
+ngx-avatar@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/ngx-avatar/-/ngx-avatar-2.7.0.tgz#207183076892377119d73c19bd0e66ae7ec126e1"
+  dependencies:
+    is-retina "^1.0.3"
+    ts-md5 "^1.2.0"
 
 ngx-bootstrap@^1.9.3:
   version "1.9.3"
@@ -3337,6 +3358,10 @@ ts-loader@^2.3.4:
     enhanced-resolve "^3.0.0"
     loader-utils "^1.0.2"
     semver "^5.0.1"
+
+ts-md5@^1.2.0:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/ts-md5/-/ts-md5-1.2.2.tgz#d176bcb9daca485a0fd29e6092bd4f6d658cf727"
 
 tsickle@^0.21.0:
   version "0.21.6"
