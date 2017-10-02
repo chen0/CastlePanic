@@ -23,6 +23,21 @@ export class GameSession {
         });
     }
 
+    public static userExists(name: string, gameCode: string, callback: (exists: boolean) => void): void {
+        let db = new DBConnector();
+        let queryStr = `SELECT COUNT(name) AS user_exists FROM Users WHERE name='${name}' AND game_code='${gameCode}';`;
+        db.query(queryStr, (err: any, rows: any, fields: any) => {
+            db.close();
+
+            let exists = _.get( _.head(rows), 'user_exists', 1);
+            if ( exists ) {
+                callback(true);
+            } else {
+                callback(false);
+            }
+        });
+    }
+
     public static addUser(name: string, role: string, gameCode: string, callback: (success: boolean) => void) {
         GameSession.gameCodeExists(gameCode, (exists: boolean): void =>  {
             if ( exists ) {
@@ -39,53 +54,32 @@ export class GameSession {
     }
     
     /**
-     * Queries the DB and retrieves all names associated with the gameCode 
-     * and the role associated with the parameter name
+     * Queries the DB and retrieves all names associated with the gameCode and the role associated with the 
+     * parameter name
      */
-    public static getLobby(gameCode: string, name: string, callback: (names: string[], role: string) => void) {
+    public static getLobby(gameCode: string, name: string, callback: (names: string[], role: string[]) => void) {
         let queryStr = `select name, role from Users where game_code='${gameCode}';`;
         let db = new DBConnector();
+
         db.query(queryStr, (err: any, rows: any, fields: any) => {
             db.close();
             let names: string[] = [];
             let role: string = '';
+            let playerRole: string[] = []; 
 
             _.forEach(rows, (user) => {
                 let getName = _.get(user, 'name', '');
+                let getRole = _.get(user, 'role', ''); 
                 names.push(getName);
-                if (_.isEqual(name, getName)) {
+                playerRole.push(getRole); 
+                if ( _.isEqual(name, getName) ) { 
                     role = _.get(user, 'role', '');
                 }
             });
-            callback(names, role);
+            callback(names, playerRole);
         });
     }
     
-    /**
-     * Given a game code this will query a gameSession and parse the gameState.
-     * 
-     * @static
-     * @param {string} gameCode - code of session to retrieve
-     * @param {(session: GameSession) => void} callback - game session
-     * @memberof GameSession
-     */
-    public static getSession(gameCode: string, callback: (session: GameSession) => void) {
-        let str = `SELECT state, created FROM Games WHERE code='${gameCode}';`;
-        let db = new DBConnector();
-        db.query(str, (err: any, rows: any, fields: any) => {
-            db.close();
-            let row1 = _.head(rows);
-            let state = _.get( row1, 'state', '');
-            let created = _.get(row1, 'created', '');
-
-            let gameState = GameState.parse(state);
-            let session = new GameSession();
-
-            session.setAttributes(gameCode, created, gameState);
-            callback(session);
-        });
-    }
-
     private code: string;
     private state: GameState;
     private created: Date;
