@@ -4,6 +4,7 @@ import { Card } from './deck/card';
 import { CardToolkit } from './deck/cardtoolkit';
 import { Monster } from './monsters/monster';
 import { MonsterToolkit } from './monsters/toolkit';
+import {Player} from './player'; 
 
 @JsonObject
 export class GameState {
@@ -37,8 +38,14 @@ export class GameState {
     @JsonProperty('monsters', [Monster])
     private monsters: Monster[] = [];
 
-    @JsonProperty('users', String)
-    private users: string = '';
+    @JsonProperty('players', [Player])
+    private players: Player[] = [];
+
+    @JsonProperty('owner', String)
+    private owner: string = '';
+
+    @JsonProperty('turnNum', Number)
+    private turnNum: number = 0;
 
     @JsonProperty('cards', [Card])
     private cards: Card[] = [];
@@ -46,7 +53,9 @@ export class GameState {
     constructor() {
         this.sessionId = '123';
         this.monsters = [];
-        this.users = '';
+        this.players = [];
+        this.owner = 'owner';
+        this.turnNum = 0;
         this.cards = [];
     }
 
@@ -56,6 +65,36 @@ export class GameState {
 
     public getSessionID(): string {
         return this.sessionId;
+    }
+
+    public setOwner(userid: string): void {
+        this.owner = userid;
+    }
+
+    public addPlayer(userid: string): void {
+        this.players.push(new Player(userid));
+    }
+
+    /**
+     * return all players in this game session
+     * 
+     * @returns [Player] 
+     */
+    public getPlayers(): Player[] {
+        return this.players;
+    }
+
+    /**
+     * return the player for the current turn
+     * 
+     * @returns Player
+     */
+    public currentTurn(): Player {
+        return this.players[this.turnNum % this.players.length];
+    }
+
+    public finishTurn(): number {
+        return this.turnNum++;
     }
 
     public getMonsters(): Monster[] {
