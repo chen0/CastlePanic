@@ -5,6 +5,7 @@ import {CardTests} from './deck/cardtests';
 import {GameSession} from './gameSession';
 import {GameState} from './gameState';
 import {MonsterTests} from './monsters/test';
+import {PlayerTests} from './playerTest';
 import {ApiTest} from './testing/api.test';
 import {TowerTests} from './testing/tower.test';
 
@@ -19,6 +20,9 @@ let dbTest = new DatabaseTest( () => {
 
     console.info('\n');
     TowerTests.start();
+
+    console.info('\n');
+    PlayerTests.start();
     
     console.info('\n');
     CardTests.start();
