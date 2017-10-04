@@ -4,7 +4,7 @@ header.masthead {
 	min-height: 100%;
 	text-align: center;
 	color: white;
-	background-image: url("http://soranoumi.org/images/bg.jpg");
+	background-image: url("/bg.jpg");
 	background-position: center;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
@@ -69,4 +69,10 @@ header h1 {
 }
 .right {
 	padding: 15px;
+}
+
+.my-alert-center-style {
+	position: fixed;
+	z-index: 1000000;
+	margin: 20px 20px 20px 20px;
 }

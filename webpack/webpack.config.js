@@ -1,5 +1,6 @@
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const ForkTSCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const htmlWebpackPlugin = require('html-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
 const path = require('path');
@@ -12,7 +13,8 @@ var cleanWebpack = new CleanWebpackPlugin(['dist'], {
 });
 
 var copyWebpack = new CopyWebpackPlugin([
-  { from: path.resolve(__dirname,'src/client/styles.css'), to: path.resolve(__dirname,'dist/public')}
+  { from: path.resolve(__dirname,'../src/client/styles.css'), to: path.resolve(__dirname,'../dist/public')},
+  { from: path.resolve(__dirname, '../src/resources/**/*'), to: path.resolve(__dirname,'../dist/public/[name].[ext]')}
 ]);
 
 var contextReplacement = new webpack.ContextReplacementPlugin(
@@ -20,8 +22,10 @@ var contextReplacement = new webpack.ContextReplacementPlugin(
   false
 );
 
+var forkTsChecker = new ForkTSCheckerWebpackPlugin();
+
 var htmlWebpack = new htmlWebpackPlugin({
-  template: path.resolve(__dirname,'src/client/index.ejs')
+  template: path.resolve(__dirname,'../src/client/index.ejs')
 });
 
 var uglifyJs = new webpack.optimize.UglifyJsPlugin({
@@ -36,14 +40,17 @@ const resolver = {
 const loaderList = [
   { 
     test: /\.tsx?$/, 
-    loaders: ['ts-loader'], 
-    include: path.resolve('src')
+    loader: 'ts-loader', 
+    include: path.resolve(__dirname,'../src'),
+    options: {
+      transpileOnly: true
+    }
   },
   {
     test: /\.tsx?$/,
     enforce: 'pre',
     loader: 'tslint-loader',
-    exclude: path.resolve(__dirname,'node_modules/*')
+    exclude: path.resolve(__dirname,'../node_modules/*')
   },
   {
     test: /\.html$/,
@@ -57,10 +64,9 @@ const loaderList = [
   }, 
 ]
 
-const serverConfig = {
+const server = {
   entry: {
-    server: [path.resolve(__dirname,'src/server/index.ts')],
-    test: [path.resolve(__dirname, 'src/server/test.main.ts')]
+    server: [path.resolve(__dirname,'../src/server/index.ts')]
   },
   target: 'node',
   externals: [nodeExternals()],
@@ -70,18 +76,43 @@ const serverConfig = {
   },
   output: {
     filename: '[name].bundle.js',
-    path: path.resolve('dist')
+    path: path.resolve(__dirname, '../dist')
   },
   resolve: resolver,
   module: {
     loaders: loaderList
   },
-  plugins: []
+  plugins: [
+    forkTsChecker
+  ]
 };
 
-const clientConfig = {
+const test = {
   entry: {
-    client: [path.resolve(__dirname,'src/client/index.ts')]
+    test: [path.resolve(__dirname, '../src/server/test.main.ts')]
+  },
+  target: 'node',
+  externals: [nodeExternals()],
+  node: {
+    __dirname: false,
+    __filename: false,
+  },
+  output: {
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, '../dist')
+  },
+  resolve: resolver,
+  module: {
+    loaders: loaderList
+  },
+  plugins: [
+    forkTsChecker
+  ]
+};
+
+var client = {
+  entry: {
+    client: [path.resolve(__dirname,'../src/client/index.ts')]
   },
   target: 'web',
   node: {
@@ -89,7 +120,7 @@ const clientConfig = {
   },
   output: {
     filename: '[name].bundle.js',
-    path: path.resolve('dist/public')
+    path: path.resolve(__dirname,'../dist/public')
   },
   resolve: resolver,
   module: {
@@ -98,8 +129,8 @@ const clientConfig = {
 
   },
   plugins: [
-    cleanWebpack,
     copyWebpack,
+    forkTsChecker,
     htmlWebpack,
     contextReplacement/* ,
     uglifyJs */
@@ -107,4 +138,6 @@ const clientConfig = {
 
 };
 
-module.exports = [ serverConfig, clientConfig ];
+var config = { server, client, test};
+var plugins = { cleanWebpack };
+module.exports = { config, plugins };

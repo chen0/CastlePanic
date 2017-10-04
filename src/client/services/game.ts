@@ -1,3 +1,3 @@
 export class Game {
-    constructor(public gameCode: string) { }
+    constructor(public gameCode: string, public name: string) { }
 }

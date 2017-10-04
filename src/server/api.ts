@@ -10,7 +10,9 @@ export class Api {
         // creates api routes
         Server.getRouter().post('/api/newGame', this.newGame);
         Server.getRouter().post('/api/joinGame', this.joinGame);
-        Server.getRouter().post('/api/lobby', this.lobby);
+        Server.getRouter().post('/api/lobbyInfo', this.lobby);
+        Server.getRouter().post('/api/checkUser', this.checkUser);
+        Server.getRouter().post('/api/checkGameCode', this.checkGameCode);
     }
 
     /**
@@ -43,6 +45,37 @@ export class Api {
         });
     }
 
+    private checkUser(request: express.Request, response: express.Response): void {
+        let gameCode = _.get(request, 'body.gameCode', '');
+        let name = _.get(request, 'body.name', '');
+
+        if (!_.isEqual(name, '') && !_.isEqual(gameCode, '')) {
+            GameSession.userExists(name, gameCode, (success: boolean) => {
+                response.json({ success });
+            });
+        } else {
+            let data = {
+                error: 'Error: Missing parameter(s) in checkUser request'
+            };
+            response.json(data);
+        }
+    }
+
+    private checkGameCode(request: express.Request, response: express.Response): void {
+        let name = _.get(request, 'body.gameCode', '');
+        
+        if (!_.isEqual(name, '')) {
+            GameSession.gameCodeExists(name, (success: boolean) => {
+                response.json({ success });
+            });
+        } else {
+            let data = {
+                error: 'Error: Missing parameter(s) in checkGameCode request'
+            };
+            response.json(data);
+        }
+    }
+
     /**
      * Requests name and gameCode from incoming json object
      * Checks if given both parameters, if so calls addUser, else returns error
@@ -51,6 +84,7 @@ export class Api {
     private joinGame(request: express.Request, response: express.Response): void {
         let name = _.get(request, 'body.name', '');
         let gameCode = _.get(request, 'body.gameCode', '');
+        
         if (!_.isEqual(name, '') && !_.isEqual(gameCode, '')) {
             GameSession.addUser(name, 'player', gameCode, (success: boolean) => {
                 response.json({ success });
@@ -74,9 +108,9 @@ export class Api {
         let gameCode = _.get( request, 'body.gameCode', '');
 
         if (!_.isEqual(name, '') && (!_.isEqual(gameCode, ''))) {
-            GameSession.getLobby(gameCode, name, (names: string[], role: string) => {
+            GameSession.getLobby(gameCode, name, (names: string[], role: string[]) => {
                 let data = {
-                    Users: names,
+                    users: names,
                     role
                 };
                 response.json(data);
