@@ -18,13 +18,12 @@ export namespace PlayerTests {
     }
 
     /**
-    * Still need to use card class to test the following functions:
-    *
-    * @addCard(cardID: string[])
-    * @discardCard(cardID: string)
-    * @playCards(cardID: string[])
-    *
-    */
+     * Still need to use card class to test the following functions:
+     *
+     * @addCard(cardID: string[])
+     * @discardCard(cardID: string)
+     * @playCards(cardID: string[])
+     */
 
     function getTurn_first_player(): boolean {
         let state = new GameState();
@@ -68,9 +67,9 @@ export namespace PlayerTests {
         let str = state.toString();
         let newState = GameState.parse( str );
 
-        let player_1 = newState.getPlayers()[0];
+        let ply1 = newState.getPlayers()[0];
 
-        return player_1 instanceof Player;
+        return ply1 instanceof Player;
     }
 
 }

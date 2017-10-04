@@ -83,7 +83,7 @@ export class GameState {
      * @returns Player
      */
     public currentTurn(): Player {
-        return this.players[this.turnNum%this.players.length];
+        return this.players[this.turnNum % this.players.length];
     }
 
     public finishTurn(): number {
@@ -93,7 +93,6 @@ export class GameState {
     public getMonsters(): Monster[] {
         return this.monsters;
     }
-
 
     /**
      * Should be called at the begining of the Game to place all objects into their starting positions.
