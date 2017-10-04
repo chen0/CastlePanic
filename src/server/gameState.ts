@@ -2,7 +2,7 @@ import { JsonConvert, JsonObject, JsonProperty,  } from 'json2typescript';
 import * as _ from 'lodash';
 import { Monster } from './monsters/monster';
 import { MonsterToolkit } from './monsters/toolkit';
-import {GamePlayers} from './gamePlayers'; 
+import {Player} from './player'; 
 
 @JsonObject
 export class GameState {
@@ -35,41 +35,59 @@ export class GameState {
     @JsonProperty('monsters', [Monster])
     private monsters: Monster[] = [];
 
-    @JsonProperty('users', GamePlayers)
-    private users: GamePlayers;
+    @JsonProperty('players', [Player])
+    private players: Player[] = [];
+
+    @JsonProperty('owner', String)
+    private owner: string = '';
+
+    @JsonProperty('turnNum', Number)
+    private turnNum: number = 0;
 
     constructor() {
         this.sessionId = '123';
         this.monsters = [];
+        this.players = [];
+        this.owner = 'owner';
+        this.turnNum = 0;
     }
 
     public setSessionID(sessionid: string): void {
         this.sessionId = sessionid;
-        this.createPlayerClass();
     }
 
     public getSessionID(): string {
         return this.sessionId;
     }
 
-    public createPlayerClass(): void{
-        this.users = new GamePlayers(this.sessionId);
-    }
-
     public setOwner(userid: string): void {
-        this.users.addOwner(userid);
-    }
-    
-    public addPlayers(userid: string): void{
-        this.users.addPlayers(userid);
+        this.owner = userid;
     }
 
-    public getOwner(): string {
-        return this.users.getOwner();
+    public addPlayer(userid: string): void {
+        this.players.push(new Player(userid));
     }
 
-    public getPlayers(): string[] {
-        return this.users.getPlayers();
+    /**
+     * return all players in this game session
+     * 
+     * @returns [Player] 
+     */
+    public getPlayers(): Player[] {
+        return this.players;
+    }
+
+    /**
+     * return the player for the current turn
+     * 
+     * @returns Player
+     */
+    public currentTurn(): Player {
+        return this.players[this.turnNum%this.players.length];
+    }
+
+    public finishTurn(): number {
+        return this.turnNum++;
     }
 
     public getMonsters(): Monster[] {
