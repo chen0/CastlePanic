@@ -7,9 +7,16 @@ export class Tower {
     // maximum health a Tower can have. 1 for a tower, 1 for a wall, 1 for a fortify token.
     public static readonly maxHealth: number = 3;
 
+    /**
+     * Creates all the towers needed for the game and initializes them in the correct positions
+     * 
+     * @static
+     * @returns {Tower[]} - creates an Array of Towers for the game
+     * @memberof Tower
+     */
     public static createTowers(): Tower[] {
         let towers: Tower[] = [];
-        for(let i = 0; i < 6; i++) {
+        for (let i = 0; i < 6; i++) {
             let p = new Position(Ring.CASTLE, i + 1);
             let t = new Tower(p, 2);
             towers.push( t );

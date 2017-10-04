@@ -62,14 +62,14 @@ export namespace TowerTests {
     function getTowers(): boolean {
         let towers: Tower[] = Tower.createTowers();
         let error: boolean = false;
-        for(let i = 0; i < towers.length; i++) {
-            if( !_.isEqual( towers[i].getHealth(), 2) ) {
+        for (let i = 0; i < towers.length; i++) {
+            if ( !_.isEqual( towers[i].getHealth(), 2) ) {
                 error = true;
             }
-            if( !_.isEqual( towers[i].getPosition().getRing(), Ring.CASTLE) ) {
+            if ( !_.isEqual( towers[i].getPosition().getRing(), Ring.CASTLE) ) {
                 error = true;
             }
-            if( !_.isEqual( towers[i].getPosition().getZone(), i + 1) ) {
+            if ( !_.isEqual( towers[i].getPosition().getZone(), i + 1) ) {
                 error = true;
             }
         }

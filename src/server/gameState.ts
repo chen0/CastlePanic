@@ -4,6 +4,7 @@ import { Card } from './deck/card';
 import { CardToolkit } from './deck/cardtoolkit';
 import { Monster } from './monsters/monster';
 import { MonsterToolkit } from './monsters/toolkit';
+import { Tower } from './tower';
 
 @JsonObject
 export class GameState {
@@ -43,11 +44,15 @@ export class GameState {
     @JsonProperty('cards', [Card])
     private cards: Card[] = [];
 
+    @JsonProperty('towers', [Tower])
+    private towers: Tower[] = [];
+
     constructor() {
         this.sessionId = '123';
         this.monsters = [];
         this.users = '';
         this.cards = [];
+        this.towers = [];
     }
 
     public setSessionID(sessionid: string): void {
@@ -75,6 +80,7 @@ export class GameState {
 
         this.monsters = MonsterToolkit.getMonsters();
         this.cards = CardToolkit.getCards();
+        this.towers = Tower.createTowers();
     }
 
     public drawCard(): Card {
