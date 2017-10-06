@@ -36,6 +36,9 @@ export class GameState {
     @JsonProperty('gameCode', String)
     private sessionId: string = '';
 
+    @JsonProperty('started', Boolean)
+    private started: boolean = false;
+
     @JsonProperty('monsters', [Monster])
     private monsters: Monster[] = [];
 
@@ -62,6 +65,7 @@ export class GameState {
         this.turnNum = 0;
         this.cards = [];
         this.towers = [];
+        this.started = false;
     }
 
     public setSessionID(sessionid: string): void {
@@ -113,13 +117,23 @@ export class GameState {
     /**
      * Should be called at the begining of the Game to place all objects into their starting positions.
      * 
+     * @param {string[]} names - names of players to include in the game
      * @memberof GameState
      */
-    public initializeGame() {
+    public initializeGame(names: string[]) {
+        if (!this.started) {
+            this.started = true;
+            this.monsters = MonsterToolkit.getMonsters();
+            this.cards = CardToolkit.getCards();
+            this.towers = Tower.createTowers();
 
-        this.monsters = MonsterToolkit.getMonsters();
-        this.cards = CardToolkit.getCards();
-        this.towers = Tower.createTowers();
+            _.forEach(names, (name: string) => {
+                this.addPlayer(name);
+                // TODO deal cards
+            });
+
+            // TODO randomly place first set of monsters
+        }
     }
 
     public drawCard(): Card {
