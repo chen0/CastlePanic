@@ -114,6 +114,10 @@ export class GameState {
         return this.cards;
     }
 
+    public hasStarted(): boolean {
+        return this.started;
+    }
+
     /**
      * Should be called at the begining of the Game to place all objects into their starting positions.
      * 

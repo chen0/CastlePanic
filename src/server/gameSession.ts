@@ -39,8 +39,8 @@ export class GameSession {
     }
 
     public static addUser(name: string, role: string, gameCode: string, callback: (success: boolean) => void) {
-        GameSession.gameCodeExists(gameCode, (exists: boolean): void =>  {
-            if ( exists ) {
+        GameSession.getSession(gameCode, (session: GameSession) => {
+            if ( !_.isEqual(session, null) && !session.getState().hasStarted() ) {
                 let str = `INSERT INTO Users (name,game_code,role) VALUES ("${name}","${gameCode}","${role}");`;
                 let db = new DBConnector();
                 db.query(str, (err: any, rows: any, fields: any) => {
@@ -48,7 +48,7 @@ export class GameSession {
                     callback(true);
                 });
             } else {
-                    callback(false);
+                callback(false);
             }
         });
     }
