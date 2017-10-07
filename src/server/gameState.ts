@@ -30,6 +30,12 @@ export class GameState {
         // Convert each element in Monster array into their correct types
         obj.monsters = MonsterToolkit.assignMonsterTypes(obj.monsters);
         obj.cards = CardToolkit.assignCardTypes(obj.cards);
+
+        // Convert cards in a player's hand to it's correct type
+        _.forEach(obj.players, (player: Player) => {
+            player.assignHand( CardToolkit.assignCardTypes( player.showCards() ) );
+        });
+
         return obj;
     }
 
@@ -80,8 +86,17 @@ export class GameState {
         this.owner = userid;
     }
 
-    public addPlayer(userid: string): void {
-        this.players.push(new Player(userid));
+    /**
+     * Adds the player to the players array, and returns a reference to the new player
+     * 
+     * @param {string} userid       - name of player
+     * @returns {Player}            - reference to player
+     * @memberof GameState
+     */
+    public addPlayer(userid: string): Player {
+        let player: Player = new Player(userid);
+        this.players.push(player);
+        return player;
     }
 
     /**
@@ -132,8 +147,13 @@ export class GameState {
             this.towers = Tower.createTowers();
 
             _.forEach(names, (name: string) => {
-                this.addPlayer(name);
-                // TODO deal cards
+                // create the player
+                let player = this.addPlayer(name);
+
+                // deal the player some cards
+                for (let i = 0; i < 5; i++) {
+                    player.addCard( this.drawCard() );
+                }
             });
 
             // TODO randomly place first set of monsters
