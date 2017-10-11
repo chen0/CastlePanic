@@ -30,11 +30,20 @@ export class GameState {
         // Convert each element in Monster array into their correct types
         obj.monsters = MonsterToolkit.assignMonsterTypes(obj.monsters);
         obj.cards = CardToolkit.assignCardTypes(obj.cards);
+
+        // Convert cards in a player's hand to it's correct type
+        _.forEach(obj.players, (player: Player) => {
+            player.assignHand( CardToolkit.assignCardTypes( player.showCards() ) );
+        });
+
         return obj;
     }
 
     @JsonProperty('gameCode', String)
     private sessionId: string = '';
+
+    @JsonProperty('started', Boolean)
+    private started: boolean = false;
 
     @JsonProperty('monsters', [Monster])
     private monsters: Monster[] = [];
@@ -62,6 +71,7 @@ export class GameState {
         this.turnNum = 0;
         this.cards = [];
         this.towers = [];
+        this.started = false;
     }
 
     public setSessionID(sessionid: string): void {
@@ -76,8 +86,17 @@ export class GameState {
         this.owner = userid;
     }
 
-    public addPlayer(userid: string): void {
-        this.players.push(new Player(userid));
+    /**
+     * Adds the player to the players array, and returns a reference to the new player
+     * 
+     * @param {string} userid       - name of player
+     * @returns {Player}            - reference to player
+     * @memberof GameState
+     */
+    public addPlayer(userid: string): Player {
+        let player: Player = new Player(userid);
+        this.players.push(player);
+        return player;
     }
 
     /**
@@ -110,16 +129,35 @@ export class GameState {
         return this.cards;
     }
 
+    public hasStarted(): boolean {
+        return this.started;
+    }
+
     /**
      * Should be called at the begining of the Game to place all objects into their starting positions.
      * 
+     * @param {string[]} names - names of players to include in the game
      * @memberof GameState
      */
-    public initializeGame() {
+    public initializeGame(names: string[]) {
+        if (!this.started) {
+            this.started = true;
+            this.monsters = MonsterToolkit.getMonsters();
+            this.cards = CardToolkit.getCards();
+            this.towers = Tower.createTowers();
 
-        this.monsters = MonsterToolkit.getMonsters();
-        this.cards = CardToolkit.getCards();
-        this.towers = Tower.createTowers();
+            _.forEach(names, (name: string) => {
+                // create the player
+                let player = this.addPlayer(name);
+
+                // deal the player some cards
+                for (let i = 0; i < 5; i++) {
+                    player.addCard( this.drawCard() );
+                }
+            });
+
+            // TODO randomly place first set of monsters
+        }
     }
 
     public drawCard(): Card {

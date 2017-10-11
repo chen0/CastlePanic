@@ -56,6 +56,7 @@ export namespace MonsterToolkit {
                     break;
                 case 'Orc':
                     typed = new Orc();
+                    break;
                 default:
                     console.error(`Unrecognized Monster Type: ${monster.type}`);
                     break;

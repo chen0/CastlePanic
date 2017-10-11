@@ -39,8 +39,8 @@ export class GameSession {
     }
 
     public static addUser(name: string, role: string, gameCode: string, callback: (success: boolean) => void) {
-        GameSession.gameCodeExists(gameCode, (exists: boolean): void =>  {
-            if ( exists ) {
+        GameSession.getSession(gameCode, (session: GameSession) => {
+            if ( !_.isEqual(session, null) && !session.getState().hasStarted() ) {
                 let str = `INSERT INTO Users (name,game_code,role) VALUES ("${name}","${gameCode}","${role}");`;
                 let db = new DBConnector();
                 db.query(str, (err: any, rows: any, fields: any) => {
@@ -48,7 +48,7 @@ export class GameSession {
                     callback(true);
                 });
             } else {
-                    callback(false);
+                callback(false);
             }
         });
     }
@@ -77,6 +77,80 @@ export class GameSession {
                 }
             });
             callback(names, playerRole);
+        });
+    }
+
+    /**
+     * Gets the Game Session from the database and passes it into a callback function, the session can be null if it
+     * does not exist
+     * 
+     * @static
+     * @param {string} gameCode                           - game code
+     * @param {(session: GameSession) => void} callback   - session argument can be null if game session does not exist
+     * @memberof GameSession
+     */
+    public static getSession(gameCode: string, callback: (session: GameSession) => void ) {
+        let queryStr = `SELECT created, state FROM Games WHERE code='${gameCode}';`;
+        let db = new DBConnector();
+
+        db.query(queryStr, (err: any, rows: any, fields: any) => {
+            db.close();
+
+            if ( _.get(rows, 'length', 0) > 0) {
+                let created: string = _.get( _.head(rows), 'created', '');
+                let stateStr: string = _.get( _.head(rows), 'state', '');
+    
+                let state: GameState = GameState.parse( stateStr );
+    
+                let session: GameSession = new GameSession();
+                session.setAttributes(gameCode, created, state);
+                callback(session);
+            } else {
+                callback(null);
+            }       
+        });
+    }
+
+    /**
+     * Starts the game if the user created the game. Adds all the users in the lobby as players
+     * and initializes the game.
+     * 
+     * @static
+     * @param {string} gameCode                         - code of game to start
+     * @param {string} name                             - name of user who is starting the game
+     * @param {(success: boolean) => void} callback     - true if game was started, false if there was an error
+     * @memberof GameSession
+     */
+    public static startGame(gameCode: string, name: string, callback: (success: boolean) => void) {
+        let verifyQuery = `SELECT COUNT(name) AS valid FROM Users
+            WHERE game_code='${gameCode}' AND name='${name}' AND role='owner';`;
+        let db = new DBConnector();
+
+        db.query(verifyQuery, (err: any, rows: any, fields: any) => {
+            db.close();
+
+            let valid: boolean = _.get(_.head(rows), 'valid', false);
+            if (valid) {
+
+                GameSession.getSession(gameCode, (session: GameSession) => {
+                    GameSession.getLobby(gameCode, name, (names: string[], roles: string[]) => {
+                        
+                        if ( !_.isEqual(session, null) ) {
+                            
+                            let state = session.getState();
+
+                            state.initializeGame(names);
+
+                            session.save( () => callback(true) );
+                        } else {
+                            callback(false);
+                        }
+                    });
+
+                });
+            } else {
+                callback(false);
+            }
         });
     }
     
@@ -167,7 +241,8 @@ export class GameSession {
         console.log(this.state.getOwner());
         console.log(this.state.getPlayers());*/
         let queryStr: string = `INSERT INTO Games (code, created, state)
-         VALUES ('${this.code}','${this.getTimeStamp()}','${this.state.toString()}')`;
+         VALUES ('${this.code}','${this.getTimeStamp()}','${this.state.toString()}')
+         ON DUPLICATE KEY UPDATE state='${this.state.toString()}';`;
 
         db.query( queryStr, (err: any, rows: any, fields: any) => {
             db.close();

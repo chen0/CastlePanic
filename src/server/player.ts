@@ -1,5 +1,6 @@
 import { JsonConvert, JsonObject, JsonProperty,  } from 'json2typescript';
 import * as _ from 'lodash';
+import { Card } from './deck/card';
 
 @JsonObject
 export class Player {
@@ -7,8 +8,8 @@ export class Player {
     @JsonProperty('userid', String)
     public userid: string = '';
 
-    @JsonProperty('cards', [String])
-    private cards: string[] = [];
+    @JsonProperty('cards', [Card])
+    private cards: Card[] = [];
 
     @JsonProperty('numCards', Number)
     private numCards: number = 0;
@@ -20,13 +21,23 @@ export class Player {
     }
 
     /**
+     * Writes over the players existing hand with a new array of cards, should probably only be
+     * used when parsing the game state.
+     * 
+     * @param {Card[]} cards
+     * @memberof Player
+     */
+    public assignHand(cards: Card[]) {
+        this.cards = cards;
+    }
+
+    /**
      * Add specific cards to this player
      * 
      * @returns {boolean} 
-     * still need to modify: add card class and change string[] to card[]
      */
-    public addCard(cardID: string[]): boolean {
-        this.numCards = this.numCards + cardID.length;
+    public addCard(card: Card): boolean {
+        this.cards.push(card);
         return false; 
     }
 
@@ -55,7 +66,7 @@ export class Player {
      * 
      * @returns [card]
      */
-    public showCards(): string[] {
+    public showCards(): Card[] {
         return this.cards; 
     }
 
