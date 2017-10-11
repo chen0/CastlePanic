@@ -186,7 +186,7 @@ export class GameState {
 		let drawnMonster: Monster = this.monsters.pop();
 //		if(_.isEqual(undefined, drawnMonster)){
 			//Figure out a way to end the game here.
-//			this.winloss = 'true';
+//			this.winloss = true;
 //			finishTurn();
 		}
 		return drawnMonster;
