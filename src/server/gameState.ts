@@ -159,6 +159,15 @@ export class GameState {
             // TODO randomly place first set of monsters
         }
     }
+	
+	public drawMonster(): Monster{
+		let drawnMonster: Monster = this.monsters.pop();
+		if(_.isEqual(undefined, drawnMonster)){
+			//Figure out a way to end the game here.
+			
+		}
+		return drawnMonster;
+	}
 
     public drawCard(): Card {
         let drawnCard: Card = this.cards.pop();
