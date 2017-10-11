@@ -62,6 +62,9 @@ export class GameState {
 
     @JsonProperty('towers', [Tower])
     private towers: Tower[] = [];
+	
+	@JsonProperty('winloss', Boolean)
+	private winloss: boolean = null;
 
     constructor() {
         this.sessionId = '123';
@@ -72,6 +75,7 @@ export class GameState {
         this.cards = [];
         this.towers = [];
         this.started = false;
+		this.winloss = null;
     }
 
     public setSessionID(sessionid: string): void {
@@ -116,8 +120,26 @@ export class GameState {
     public currentTurn(): Player {
         return this.players[this.turnNum % this.players.length];
     }
-
+	
+	//thinking about putting a check in the finishturn function 
+	//to check if a bool representing the win/loss condition returns true, false, or null. 
+	//if true, players win game
+	//if false, players lose
+	//if null, play continues
+	//The way I'm thinking this happens, is that
+	//we call a function from some class (haven't looked into which one)
+	//that contains a function to end the game as a loss or end it as a win
+	//I've used temp function values below.
+	
     public finishTurn(): number {
+		if(_.isEqual(winloss, 'false')){
+			//class.lossconditionclosegame;
+		}
+		else if(_.isEqual(winloss, 'true')){
+			//class.winconditionendgame;
+		}
+		//else, but if it has hit this, it should mean that neither above statement are true as 
+		//that would end the game on the spot.
         return this.turnNum++;
     }
 
@@ -162,13 +184,18 @@ export class GameState {
 	
 	public drawMonster(): Monster{
 		let drawnMonster: Monster = this.monsters.pop();
-		if(_.isEqual(undefined, drawnMonster)){
+//		if(_.isEqual(undefined, drawnMonster)){
 			//Figure out a way to end the game here.
-			
+//			this.winloss = 'true';
+//			finishTurn();
 		}
 		return drawnMonster;
 	}
-
+	
+	public loseGame(): boolean{
+		return false;
+	}
+	
     public drawCard(): Card {
         let drawnCard: Card = this.cards.pop();
         if (_.isEqual(undefined, drawnCard)) {
