@@ -39,17 +39,6 @@ export class GameSession {
     }
 
     public static addUser(name: string, role: string, gameCode: string, callback: (success: boolean) => void) {
-        GameSession.gameCodeExists(gameCode, (exists: boolean): void =>  {
-
-            if ( exists ) {
-                callback(true);
-            } else {
-                callback(false);
-            }
-        });
-    }
-
-    public static addUser(name: string, role: string, gameCode: string, callback: (success: boolean) => void) {
         GameSession.getSession(gameCode, (session: GameSession) => {
             if ( !_.isEqual(session, null) && !session.getState().hasStarted() ) {
                 let str = `INSERT INTO Users (name,game_code,role) VALUES ("${name}","${gameCode}","${role}");`;
@@ -113,8 +102,6 @@ export class GameSession {
     
                 let state: GameState = GameState.parse( stateStr );
     
-<<<<<<< HEAD
-=======
                 let session: GameSession = new GameSession();
                 session.setAttributes(gameCode, created, state);
                 callback(session);
@@ -167,7 +154,6 @@ export class GameSession {
         });
     }
     
->>>>>>> 759b637e1bb8354d5274e1b5119809595cc3051d
     private code: string;
     private state: GameState;
     private created: Date;

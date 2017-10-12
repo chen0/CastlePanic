@@ -111,11 +111,7 @@ export class Api {
         if (!_.isEqual(name, '') && (!_.isEqual(gameCode, ''))) {
             GameSession.getLobby(gameCode, name, (names: string[], role: string[]) => {
                 let data = {
-<<<<<<< HEAD
-                    "users": names,
-=======
                     users: names,
->>>>>>> 759b637e1bb8354d5274e1b5119809595cc3051d
                     role
                 };
                 response.json(data);
