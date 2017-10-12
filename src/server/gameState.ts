@@ -10,6 +10,8 @@ import { Tower } from './tower';
 @JsonObject
 export class GameState {
 
+    public static readonly MAX_HAND_SIZE: number = 5;
+
     /**
      * Parses a string into a fully functionaly GameState object
      * 
@@ -180,7 +182,7 @@ export class GameState {
         _.forEach(this.monsters, (monster) => {
             // move monster forward
             let killed: boolean = monster.moveForward(this.towers);
-            
+
             if ( !killed ) {
                 remainingMonsters.push( monster );
             }
@@ -196,7 +198,14 @@ export class GameState {
     public nextTurn(): void {
         this.turnNum++;
         let player: Player = this.currentTurn();
-        // TODO: draw up
+
+        // number of cards to draw
+        let numCards: number = GameState.MAX_HAND_SIZE - player.showCards().length;
+
+        // draw up
+        for (let i = 0; i < numCards; i++) {
+            player.addCard( this.drawCard() );
+        }
     }
 
     /**
