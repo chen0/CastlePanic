@@ -170,11 +170,32 @@ export class GameState {
     }
 
     /**
+     * Moves all the monsters that are on the board forward or clockwise.
+     * 
+     * @memberof GameState
+     */
+    public moveAllMonsters(): void {
+        let remainingMonsters: Monster[] = [];
+
+        _.forEach(this.monsters, (monster) => {
+            // move monster forward
+            let killed: boolean = monster.moveForward(this.towers);
+            
+            if ( !killed ) {
+                remainingMonsters.push( monster );
+            }
+        });
+
+        // update monsters
+        this.monsters = remainingMonsters;
+    }
+
+    /**
      * Starts the next player's turn.
      */
     public nextTurn(): void {
         this.turnNum++;
-        let player = this.currentTurn();
+        let player: Player = this.currentTurn();
         // TODO: draw up
     }
 
@@ -188,7 +209,7 @@ export class GameState {
      */
     public endTurn(userName: string): boolean {
         if (this.hasStarted() && _.isEqual( this.currentTurn().showPlayerID(), userName) ) {
-            // TODO: move monsters forward
+            this.moveAllMonsters();
             // TODO: check if game is over
             // TODO: place new monsters
             this.nextTurn();
