@@ -4,7 +4,7 @@ import { Card } from './deck/card';
 import { CardToolkit } from './deck/cardtoolkit';
 import { Monster } from './monsters/monster';
 import { MonsterToolkit } from './monsters/toolkit';
-import {Player} from './player';
+import { Player } from './player';
 import { Tower } from './tower';
 
 @JsonObject
@@ -33,7 +33,7 @@ export class GameState {
 
         // Convert cards in a player's hand to it's correct type
         _.forEach(obj.players, (player: Player) => {
-            player.assignHand( CardToolkit.assignCardTypes( player.showCards() ) );
+            player.assignHand(CardToolkit.assignCardTypes(player.showCards()));
         });
 
         return obj;
@@ -152,7 +152,7 @@ export class GameState {
 
                 // deal the player some cards
                 for (let i = 0; i < 5; i++) {
-                    player.addCard( this.drawCard() );
+                    player.addCard(this.drawCard());
                 }
             });
 
@@ -167,6 +167,35 @@ export class GameState {
             return this.cards.pop();
         }
         return drawnCard;
+    }
+
+    /**
+     * Starts the next player's turn.
+     */
+    public nextTurn(): void {
+        this.turnNum++;
+        let player = this.currentTurn();
+        // TODO: draw up
+    }
+
+    /**
+     * Ends a players turn. Can only be called after the game has started with the current player's username.
+     * moves monsters forward, checks if game is over, and places new monsters.
+     * 
+     * @param {string} userName     - user name of player who is ending their turn.
+     * @returns {boolean}           - true if turn ended successfully, false if turn was not ended.
+     * @memberof GameState
+     */
+    public endTurn(userName: string): boolean {
+        if (this.hasStarted() && _.isEqual( this.currentTurn().showPlayerID(), userName) ) {
+            // TODO: move monsters forward
+            // TODO: check if game is over
+            // TODO: place new monsters
+            this.nextTurn();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

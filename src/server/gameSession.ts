@@ -235,11 +235,6 @@ export class GameSession {
     public save(callback: () => void): void {
         let db = new DBConnector();
         this.state.setSessionID(this.code);
-        /*this.state.setOwner("onwer");
-        this.state.addPlayers("player1");
-        this.state.addPlayers("player2");
-        console.log(this.state.getOwner());
-        console.log(this.state.getPlayers());*/
         let queryStr: string = `INSERT INTO Games (code, created, state)
          VALUES ('${this.code}','${this.getTimeStamp()}','${this.state.toString()}')
          ON DUPLICATE KEY UPDATE state='${this.state.toString()}';`;
