@@ -14,6 +14,8 @@ class Server {
     private express: express.Application;
     private router: express.Router;
 
+    private server: any;
+
     constructor() {
         this.express = express();
         this.express.use(bodyParser.urlencoded({ extended: false }));
@@ -40,9 +42,28 @@ class Server {
      * @memberof Server
      */
     public start(): void {
-        this.express.listen( Server.port, () => {
+        this.server = this.express.listen( Server.port, () => {
             console.info(`Server running at http://127.0.0.1:${Server.port}`);
         });
+    }
+
+    /**
+     * Starts the express server on port, and calls a callback function after server is running
+     * @param callback
+     */
+    public startAsync(callback: () => void) {
+        this.server = this.express.listen( Server.port, () => {
+            callback();
+        });
+    }
+
+    /**
+     * Stops the server
+     * 
+     * @memberof Server
+     */
+    public stop(): void {
+        this.server.close();
     }
 }
 

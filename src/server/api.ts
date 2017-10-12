@@ -13,6 +13,7 @@ export class Api {
         Server.getRouter().post('/api/lobbyInfo', this.lobby);
         Server.getRouter().post('/api/checkUser', this.checkUser);
         Server.getRouter().post('/api/checkGameCode', this.checkGameCode);
+        Server.getRouter().post('/api/startGame', this.startGame);
     }
 
     /**
@@ -110,7 +111,11 @@ export class Api {
         if (!_.isEqual(name, '') && (!_.isEqual(gameCode, ''))) {
             GameSession.getLobby(gameCode, name, (names: string[], role: string[]) => {
                 let data = {
+<<<<<<< HEAD
                     "users": names,
+=======
+                    users: names,
+>>>>>>> 759b637e1bb8354d5274e1b5119809595cc3051d
                     role
                 };
                 response.json(data);
@@ -120,6 +125,25 @@ export class Api {
                 error: 'Error: Missing parameter(s) in lobby request'
             };
             response.json(data);
+        }
+    }
+
+    /**
+     * Handles a request to start the game. The game can only be started by the same user that created the session.
+     * A valid name and gameCode need to be sent to /api/startGame to work.
+     * @param request 
+     * @param response 
+     */
+    private startGame(request: express.Request, response: express.Response): void {
+        let name = _.get(request, 'body.name', '');
+        let gameCode = _.get(request, 'body.gameCode', '');
+
+        if ( !_.isEqual(name, '') && !_.isEqual(gameCode, '') ) {
+            GameSession.startGame( gameCode, name, (success: boolean) => {
+                response.json({success});
+            });
+        } else {
+            response.json({ success: false, error: 'Error: Missing parameter(s)'});
         }
     }
 }

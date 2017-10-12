@@ -1,15 +1,14 @@
 import * as _ from 'lodash';
-import { Card } from './card';
-import { GreenSwordsman } from './greenswordsman';
-import { RedSwordsman } from './redswordsman';
-import { BlueSwordsman } from './blueswordsman';
-import { GreenArcher } from './greenarcher';
 import { BlueArcher } from './bluearcher';
-import { RedArcher } from './redarcher';
 import { BlueKnight } from './blueknight';
+import { BlueSwordsman } from './blueswordsman';
+import { Card } from './card';
+import { GreenArcher } from './greenarcher';
 import { GreenKnight } from './greenknight';
+import { GreenSwordsman } from './greenswordsman';
+import { RedArcher } from './redarcher';
 import { RedKnight } from './redknight';
-
+import { RedSwordsman } from './redswordsman';
 
 export namespace CardToolkit {
 
@@ -22,57 +21,51 @@ export namespace CardToolkit {
      */
     export function getCards(): Card[] {
         let cards: Card[] = [];
-//		let drawnCards: Card[] = [];
+        // let drawnCards: Card[] = [];
 
         // create all the GreenSwordsman
         for (let i = 0; i < 6; i++) {
             cards.push(new GreenSwordsman());
         }
 
-
         // create all the RedSwordsman
         for (let i = 0; i < 6; i++) {
             cards.push(new RedSwordsman());
         }
-		
-		
-		
+
         // create all the BlueSwordsman
         for (let i = 0; i < 6; i++) {
             cards.push(new BlueSwordsman());
         }
-		
-		
-		
+
         // create all the GreenArcher
         for (let i = 0; i < 6; i++) {
             cards.push(new GreenArcher());
         }
-		
-		// create all the BlueArcher
+
+        // create all the BlueArcher
         for (let i = 0; i < 6; i++) {
             cards.push(new BlueArcher());
         }
-		
-		// create all the RedArcher
+
+        // create all the RedArcher
         for (let i = 0; i < 6; i++) {
             cards.push(new RedArcher());
         }
-		// create all the BlueKnight
+        // create all the BlueKnight
         for (let i = 0; i < 6; i++) {
             cards.push(new BlueKnight());
         }
 
-		// create all the GreenKnight
+        // create all the GreenKnight
         for (let i = 0; i < 6; i++) {
             cards.push(new GreenKnight());
         }
-		// create all the RedKnight
+        // create all the RedKnight
         for (let i = 0; i < 6; i++) {
             cards.push(new RedKnight());
         }
 
-		
         return _.shuffle(cards);
     }
 
@@ -98,8 +91,8 @@ export namespace CardToolkit {
                     break;
                 case 'BlueSwordsman':
                     typed = new BlueSwordsman();
-					break;
-				case 'GreenArcher':
+                    break;
+                case 'GreenArcher':
                     typed = new GreenArcher();
                     break;
                 case 'BlueArcher':
@@ -107,8 +100,8 @@ export namespace CardToolkit {
                     break;
                 case 'RedArcher':
                     typed = new RedArcher();
-					break;
-				case 'BlueKnight':
+                    break;
+                case 'BlueKnight':
                     typed = new BlueKnight();
                     break;
                 case 'GreenKnight':
@@ -116,7 +109,7 @@ export namespace CardToolkit {
                     break;
                 case 'RedKnight':
                     typed = new RedKnight();
-					break;
+                    break;
                 default:
                     console.error(`Unrecognized Card Type: ${card.type}`);
                     break;
