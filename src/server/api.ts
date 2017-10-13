@@ -14,6 +14,7 @@ export class Api {
         Server.getRouter().post('/api/checkUser', this.checkUser);
         Server.getRouter().post('/api/checkGameCode', this.checkGameCode);
         Server.getRouter().post('/api/startGame', this.startGame);
+        Server.getRouter().post('/api/endTurn', this.endTurn);
     }
 
     /**
@@ -137,6 +138,42 @@ export class Api {
         if ( !_.isEqual(name, '') && !_.isEqual(gameCode, '') ) {
             GameSession.startGame( gameCode, name, (success: boolean) => {
                 response.json({success});
+            });
+        } else {
+            response.json({ success: false, error: 'Error: Missing parameter(s)'});
+        }
+    }
+
+    /**
+     * Handles a request to end a player's turn. send name, gameCode to /api/endTurn.
+     * The name and gameCode need to be valid and the name must be the name of the current users turn.
+     * @param request 
+     * @param response 
+     */
+    private endTurn(request: express.Request, response: express.Response): void {
+        let name = _.get(request, 'body.name', '');
+        let gameCode = _.get( request, 'body.gameCode', '');
+
+        if ( !_.isEqual(name, '') && !_.isEqual(gameCode, '') ) {
+            GameSession.getSession( gameCode, (session: GameSession) => {
+
+                if ( !_.isEqual(session, null) ) {
+
+                    let state = session.getState();
+
+                    let success = state.endTurn(name);
+                    if ( success ) {
+                        session.save( () => {
+                            response.json({success});
+                        });
+                    } else {
+                        response.json({success, error: 'Error: could not end turn'});
+                    }
+
+                } else {
+                    // session did not exist
+                    response.json({success: false, error: 'Error: name or gameCode is invalid'});
+                }
             });
         } else {
             response.json({ success: false, error: 'Error: Missing parameter(s)'});

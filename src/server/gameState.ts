@@ -4,11 +4,13 @@ import { Card } from './deck/card';
 import { CardToolkit } from './deck/cardtoolkit';
 import { Monster } from './monsters/monster';
 import { MonsterToolkit } from './monsters/toolkit';
-import {Player} from './player';
+import { Player } from './player';
 import { Tower } from './tower';
 
 @JsonObject
 export class GameState {
+
+    public static readonly MAX_HAND_SIZE: number = 5;
 
     /**
      * Parses a string into a fully functionaly GameState object
@@ -33,7 +35,7 @@ export class GameState {
 
         // Convert cards in a player's hand to it's correct type
         _.forEach(obj.players, (player: Player) => {
-            player.assignHand( CardToolkit.assignCardTypes( player.showCards() ) );
+            player.assignHand(CardToolkit.assignCardTypes(player.showCards()));
         });
 
         return obj;
@@ -152,7 +154,7 @@ export class GameState {
 
                 // deal the player some cards
                 for (let i = 0; i < 5; i++) {
-                    player.addCard( this.drawCard() );
+                    player.addCard(this.drawCard());
                 }
             });
 
@@ -167,6 +169,63 @@ export class GameState {
             return this.cards.pop();
         }
         return drawnCard;
+    }
+
+    /**
+     * Moves all the monsters that are on the board forward or clockwise.
+     * 
+     * @memberof GameState
+     */
+    public moveAllMonsters(): void {
+        let remainingMonsters: Monster[] = [];
+
+        _.forEach(this.monsters, (monster) => {
+            // move monster forward
+            let killed: boolean = monster.moveForward(this.towers);
+
+            if ( !killed ) {
+                remainingMonsters.push( monster );
+            }
+        });
+
+        // update monsters
+        this.monsters = remainingMonsters;
+    }
+
+    /**
+     * Starts the next player's turn.
+     */
+    public nextTurn(): void {
+        this.turnNum++;
+        let player: Player = this.currentTurn();
+
+        // number of cards to draw
+        let numCards: number = GameState.MAX_HAND_SIZE - player.showCards().length;
+
+        // draw up
+        for (let i = 0; i < numCards; i++) {
+            player.addCard( this.drawCard() );
+        }
+    }
+
+    /**
+     * Ends a players turn. Can only be called after the game has started with the current player's username.
+     * moves monsters forward, checks if game is over, and places new monsters.
+     * 
+     * @param {string} userName     - user name of player who is ending their turn.
+     * @returns {boolean}           - true if turn ended successfully, false if turn was not ended.
+     * @memberof GameState
+     */
+    public endTurn(userName: string): boolean {
+        if (this.hasStarted() && _.isEqual( this.currentTurn().showPlayerID(), userName) ) {
+            this.moveAllMonsters();
+            // TODO: check if game is over
+            // TODO: place new monsters
+            this.nextTurn();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

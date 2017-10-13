@@ -1,4 +1,5 @@
 import { JsonObject, JsonProperty } from 'json2typescript';
+import * as _ from 'lodash';
 
 export namespace Ring {
     export let CASTLE = 0;
@@ -21,6 +22,7 @@ export class Position {
     @JsonProperty('ring', Number)
     private ring: number;
 
+    // zone is on a scale 1 - 6 to represent the different zones on the board
     @JsonProperty('zone', Number)
     private zone: number;
 
@@ -58,6 +60,48 @@ export class Position {
      */
     public getZone(): number {
         return this.zone;
+    }
+
+    /**
+     * Creates a new position that is rotated around the board in the clockwise direction.
+     * Does not modify the current position
+     * 
+     * @returns {Position}          - new rotated position.
+     * @memberof Position
+     */
+    public clockwise(): Position {
+        // newZone = ( (zone - 1 + 1) % 6) + 1
+        // subtract 1 to translate to scale 0-5
+        // add 1 to move clockwise
+        // mod 6 to prevent values higher than 5
+        // add 1 to translate to scale 1-6
+        let newZone = (this.getZone() % 6) + 1;
+        return new Position(this.ring, newZone);
+    }
+
+    /**
+     * Creates a new position that is one spot forward or clockwise.
+     * 
+     * @returns {Position} 
+     * @memberof Position
+     */
+    public nextPosition(): Position {
+        if ( _.isEqual(this.ring, Ring.CASTLE) ) {
+            return this.clockwise();
+        } else {
+            return new Position( this.ring - 1, this.zone);
+        }
+    }
+
+    /**
+     * Checks if two positions are the same position on the board.
+     * 
+     * @param {Position} position     - True if positions are equal, False if they are not
+     * @returns {boolean} 
+     * @memberof Position
+     */
+    public isEqual(position: Position): boolean {
+        return _.isEqual(this.ring, position.getRing()) && _.isEqual(this.zone, position.getZone() );
     }
 
     /**

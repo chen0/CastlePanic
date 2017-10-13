@@ -1,6 +1,7 @@
 import { JsonObject, JsonProperty } from 'json2typescript';
 import * as _ from 'lodash';
-import {Position} from '../position';
+import { Position, Ring } from '../position';
+import { Tower } from '../tower';
 import { Goblin } from './goblin';
 import { Orc } from './orc';
 import { Troll } from './troll';
@@ -70,5 +71,33 @@ export class Monster {
      */
     public onDraw(): void {
         // children of the monster class can override this
+    }
+
+    /**
+     * Moves the monster forward or clockwise if the monster is on the board.
+     * If a tower is in it's way it deals damage to the tower and itself.
+     * Monster does not move if it deals damage to a tower.
+     * 
+     * @param {Tower[]} towers     - towers that are currently on the game board
+     * @returns {boolean}          - true if monster was killed, false if monster survived
+     * @memberof Monster
+     */
+    public moveForward(towers: Tower[]): boolean {
+        if (!_.isEqual(this.position.getRing(), Ring.OFF_BOARD)) {
+
+            // get the next position for the monster
+            let newPos: Position = this.position.nextPosition();
+
+            // if a tower is still standing and at that position deal damage
+            let tower = _.find(towers, (t: Tower) => t.getPosition().isEqual(newPos));
+            if (tower && tower.isStanding()) {
+                tower.hit();
+                return this.hit();
+            }
+
+            // move monster
+            this.position = newPos;
+        }
+        return false;
     }
 }
