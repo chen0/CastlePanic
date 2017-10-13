@@ -16,7 +16,7 @@ export class Player {
 
     constructor(userid: string) {
         this.userid = userid; 
-        this.cards = new Array();
+        this.cards = [];
         this.numCards = 0;
     }
 
