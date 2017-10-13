@@ -36,9 +36,8 @@ export class Player {
      * 
      * @returns {boolean} 
      */
-    public addCard(card: Card): boolean {
+    public addCard(card: Card): void {
         this.cards.push(card);
-        return false; 
     }
 
     /**
@@ -46,6 +45,9 @@ export class Player {
      * 
      * @returns {boolean} 
      */
+	 
+	 //pretty sure we're not using this function anymore. Discarding isn't a thing.
+	 //also, like 70% sure this wouldn't work regardless with how the rest of our code is set up.
     public discardCard(cardID: string): boolean {
         this.numCards--;
         return false; 
