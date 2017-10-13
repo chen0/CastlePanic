@@ -1,4 +1,5 @@
 import {Component, Inject, OnInit, TemplateRef, ViewEncapsulation } from '@angular/core';
+import {Http} from '@angular/http';
 import {Router} from '@angular/router';
 import { Alert, AlertCenterComponent, AlertCenterService, AlertType } from 'ng2-alert-center'; 
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -27,7 +28,8 @@ export class IndexComponent implements OnInit {
         @Inject(GameSessionService) private gameService: GameSessionService, 
         @Inject(BsModalService) private modalService: BsModalService, 
         @Inject(Router) private router: Router, 
-        @Inject(AlertCenterService) private service: AlertCenterService) {
+        @Inject(AlertCenterService) private service: AlertCenterService, 
+        @Inject(Http) private http: Http) {
 
     }
  
@@ -50,17 +52,15 @@ export class IndexComponent implements OnInit {
                 .subscribe((game) => {
                     this.game = game; 
                     this.nickName = name; 
+                    this.modalRef.hide();
+                    this.modalRef = this.modalService.show(template);
                 }); 
-
-            this.modalRef.hide();
-            this.modalRef = this.modalService.show(template);
-
         }
     } 
 
     public toNewLobby() {
         this.modalRef.hide();
-        this.router.navigate(['/lobby', {sessionid: this.game.gameCode.toString(), nickname: this.nickName}]);
+        this.router.navigate(['/lobby', this.game.gameCode.toString(), this.nickName]);
     }
 
     public toLobby(sessionID: string, name: string) {

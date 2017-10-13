@@ -7,16 +7,6 @@ body {
   padding-top: 10px;
 }
 
-
-/*
- * Global add-ons
- */
-
-.sub-header {
-  padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
-}
-
 /*
  * Top navigation
  * Hide default border to remove 1px line.
@@ -33,12 +23,33 @@ body {
 .sidebar {
   display: none;
 }
-.start-game-button {
+
+.start-game-mobile {
   display: none;
 }
+.start-game-button {
+  text-align: center;
+  background-color: rgba(0,0,0,0);
+  border: 1px solid #ddd;
+  color: #ddd;
+  transition: background-color 0.3s ease-out;
+  margin-left: 5%;
+  width: 90%;
+}
+.start-game-button:hover {
+  text-align: center;
+  background-color: rgba(255,255,255,0.5);
+  border: 1px solid #fff;
+  transition: background-color 0.3s ease-out;
+}
 @media (max-width: 768px) {
-  .start-game-button {
+  .start-game-mobile {
     display: inline;
+    text-align: center;
+  }
+  .start-game-text: {
+    display: inline;
+    text-align: center;
   }
 }
 @media (min-width: 768px) {
@@ -53,12 +64,22 @@ body {
     padding-top: 0px;
     overflow-x: hidden;
     overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-    background-color: #f5f5f5;
-    border-right: 1px solid #eee;
+    border-right: 1px solid #888;
+    background: linear-gradient(0deg,rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url("/bg_blur.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    color: #ddd;
   }
 }
 
 /* Sidebar navigation */
+.sidebar:after {
+  background-color: rgba(0,0,0,0.75);
+}
+.sidebar:hover:after {
+  background-color: rgba(0,0,0,0.75);
+}
 .nav-sidebar {
   margin-right: -21px; /* 20px padding + 1px border */
   margin-bottom: 20px;
@@ -75,7 +96,6 @@ body {
   background-color: #428bca;
 }
 
-
 /*
  * Main content
  */
@@ -89,10 +109,16 @@ body {
     padding-left: 40px;
   }
 }
+.main {
+  background: linear-gradient(0deg,rgba(0,0,0,0.2),rgba(0,0,0,0.2)), url("/bg_blur.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  height: 100%;
+}
 .main .page-header {
   margin-top: 0;
 }
-
 
 /*
  * Placeholder dashboard ideas
@@ -101,9 +127,6 @@ body {
 .placeholders {
   margin-bottom: 30px;
   text-align: center;
-}
-.placeholders h4 {
-  margin-bottom: 0;
 }
 .placeholder {
   margin-bottom: 20px;
@@ -115,4 +138,22 @@ body {
 .fake {
   background-color: #f5f5f5;
   color: black;
+}
+.placeholders h4 {
+  margin-bottom: 0;
+  color: #ddd;
+}
+
+.sub-header {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #888;
+  color: #ddd;
+}
+
+.custom-page-header {
+  border-bottom: 1px solid #bbb;
+  color: #ddd;
+}
+.roles {
+  color: #f1f1f1;
 }

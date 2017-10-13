@@ -1,6 +1,6 @@
     <div class="container-fluid">
       <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar">
+        <div class="col-sm-3 col-md-2 sidebar overlay">
           <ul class="nav nav-sidebar">
             <h2 class="text-center">Castle Panic Online</h2>
             <h4 class="text-center">lobby: {{lobbyid}}</h4>
@@ -9,22 +9,24 @@
 
           </ul>
           <ul class="nav nav-sidebar">
-            <li class="active"><a href="">Start game <span class="sr-only">(current)</span></a></li>
+            <button *ngIf="showStartButton" type="button" class="btn btn-outline-secondary btn-lg btn-block start-game-button">Start Game</button>
+            <li class="active text-center" *ngIf="!showStartButton">Please wait till the owner start the game session <span class="sr-only">(current)</span></li>
           </ul>
 
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <h1 class="page-header">Players in this lobby: </h1>
-
-
+          <h1 class="page-header custom-page-header">Players in this lobby: </h1>
           <div class="row placeholders">
             <div *ngFor="let user of users; let i = index" class="col-xs-6 col-sm-3 placeholder">
               <ngx-avatar size="120" name="{{user}}" class="placeholder1"></ngx-avatar>
-              <h4>{{user}}</h4>
-              <span class="text-muted">{{roles[i]}}</span>
+              <h4><strong>{{user}}</strong></h4>
+              <span class="text-muted roles">{{roles[i]}}</span>
             </div>
           </div>
-          <button type="button" class="btn btn-primary btn-lg btn-block start-game-button">Start Game</button>
+          <div class="row placeholders"> 
+            <button *ngIf="showStartButton" type="button" class="btn btn-outline-secondary btn-lg btn-block start-game-button start-game-mobile">Start Game</button>
+            <p class="active text-center start-game-text" *ngIf="!showStartButton">Please wait till the owner start the game session </p>
+          </div>
         </div>
       </div>
     </div>

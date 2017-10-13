@@ -5,11 +5,12 @@ header.masthead {
 	text-align: center;
 	color: white;
 	background-image: url("/bg.jpg");
-	background-position: center;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
 	background-size: cover; 
+	background-repeat: no-repeat;
+	background-attachment: fixed;
 }
 header.masthead .header-content {
 	position: relative;

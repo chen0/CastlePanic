@@ -27,6 +27,7 @@ export class LobbyComponent {
     private alive: boolean; 
     private timer: Observable<number>; 
     private interval: number; 
+    private showStartButton: boolean;
 
     constructor( 
         @Inject(Router) private router: Router, 
@@ -83,6 +84,11 @@ export class LobbyComponent {
                                            .subscribe((lobbyinfo) => {
                                                this.users = lobbyinfo.users; 
                                                this.roles = lobbyinfo.role; 
+                                               if (this.roles[this.users.indexOf(this.nickname)] !== 'owner') {
+                                                   this.showStartButton = false; 
+                                               } else {
+                                                   this.showStartButton = true;
+                                               }
                                             });  
                                     }
                             });
