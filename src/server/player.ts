@@ -36,7 +36,9 @@ export class Player {
      * 
      * @returns {boolean} 
      */
-    public addCard(card: Card): void {
+    public addCard(): void {
+		let card: Card = new Card;
+		card = gameState.drawCard();
         this.cards.push(card);
     }
 
@@ -75,4 +77,10 @@ export class Player {
     public showPlayerID(): string {
         return this.userid; 
     }
+	
+	
+	/*
+	/Player should have a main function that runs every time a new turn occurs. This should call
+	/addCard, playCard, etc. and then call to gameState that the player's turn has completed.
+	*/
 }
