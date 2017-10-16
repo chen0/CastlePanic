@@ -100,4 +100,8 @@ export class Monster {
         }
         return false;
     }
+	
+	public static setPosition(monster: Monster){
+		monster.position = new Position(Ring.FOREST, _.sample([1,2,3,4,5,6]));
+	}
 }

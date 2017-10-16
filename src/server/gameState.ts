@@ -70,6 +70,7 @@ export class GameState {
 	
 	@JsonProperty('win', Boolean)
 	private win: boolean = false;
+	
 
     constructor() {
         this.sessionId = '123';
@@ -178,13 +179,16 @@ export class GameState {
     }
 	
 	
-	public drawMonster(): Monster{
+	public drawnMonster(): Monster{
 		let drawnMonster: Monster = this.monsters.pop();
 		
 		if (_.isEqual(undefined, drawnMonster)) {
 			// Figure out a way to end the game here.
 			this.win = true;
-//			finishTurn();
+			// here we would make the function call to the class that handles a win condition.
+		}
+		else {
+			Monster.setPosition(drawnMonster);
 		}
 		return drawnMonster;
 	}
@@ -238,8 +242,8 @@ export class GameState {
         if (this.hasStarted() && _.isEqual( this.currentTurn().showPlayerID(), userName) ) {
             this.moveAllMonsters();
 			this.loss = true;
-			for( i = 0; i++; i < this.tower.length ) {
-				if (towers.isStanding(tower[i])){
+			for( let i = 0; i++; i < this.towers.length ) {
+				if (towers.isStanding(towers[i])){
 					this.loss = false;
 				}
 			}
@@ -248,7 +252,8 @@ export class GameState {
 			}
             // TODONE: check if game is over
             // TODO: place new monsters
-			
+			this.drawnMonster();
+			this.drawnMonster();
 			if (this.win == true){
 				// make class/function call to win.
 			}
