@@ -1,6 +1,8 @@
 import { JsonConvert, JsonObject, JsonProperty,  } from 'json2typescript';
 import * as _ from 'lodash';
 import { Card } from './deck/card';
+import {GameState} from './gameState';
+import { Tower } from './tower';
 
 @JsonObject
 export class Player {
@@ -13,7 +15,10 @@ export class Player {
 
     @JsonProperty('numCards', Number)
     private numCards: number = 0;
-
+	
+	@JsonProperty('gameState', GameState)
+	private gameState: GameState;
+	
     constructor(userid: string) {
         this.userid = userid; 
         this.cards = [];
@@ -37,7 +42,7 @@ export class Player {
      * @returns {boolean} 
      */
     public addCard(): void {
-		let card: Card = new Card;
+		let card: Card = new Card();
 		card = gameState.drawCard();
         this.cards.push(card);
     }
@@ -82,5 +87,7 @@ export class Player {
 	/*
 	/Player should have a main function that runs every time a new turn occurs. This should call
 	/addCard, playCard, etc. and then call to gameState that the player's turn has completed.
+	/conversely, we can do all of that in a main in the front end for keeping track of and calling 
+	/things to do with player.
 	*/
 }

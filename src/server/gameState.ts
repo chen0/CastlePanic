@@ -63,8 +63,8 @@ export class GameState {
     @JsonProperty('towers', [Tower])
     private towers: Tower[] = [];
 	
-	@JsonProperty('winloss', Boolean)
-	private winloss: boolean = null;
+//	@JsonProperty('winloss', Boolean)
+//	private winloss: boolean = null;
 
     constructor() {
         this.sessionId = '123';
@@ -75,7 +75,7 @@ export class GameState {
         this.cards = [];
         this.towers = [];
         this.started = false;
-		this.winloss = null;
+	//	this.winloss = null;
     }
 
     public setSessionID(sessionid: string): void {
@@ -132,12 +132,12 @@ export class GameState {
 	//I've used temp function values below.
 	
     public finishTurn(): number {
-		if(_.isEqual(winloss, 'false')){
+//		if(_.isEqual(winloss, 'false')){
 			//class.lossconditionclosegame;
-		}
-		else if(_.isEqual(winloss, 'true')){
+//		}
+//		else if(_.isEqual(winloss, 'true')){
 			//class.winconditionendgame;
-		}
+//		}
 		//else, but if it has hit this, it should mean that neither above statement are true as 
 		//that would end the game on the spot.
         return this.turnNum++;
@@ -188,7 +188,7 @@ export class GameState {
 			//Figure out a way to end the game here.
 //			this.winloss = true;
 //			finishTurn();
-		}
+//		}
 		return drawnMonster;
 	}
 	
