@@ -246,8 +246,13 @@ export class GameState {
 			if (this.loss == true){
 				// make class/function call to loss.
 			}
-            // TODO: check if game is over
+            // TODONE: check if game is over
             // TODO: place new monsters
+			
+			if (this.win == true){
+				// make class/function call to win.
+			}
+			
             this.nextTurn();
             return true;
         } else {
