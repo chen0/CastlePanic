@@ -64,6 +64,12 @@ export class GameState {
 
     @JsonProperty('towers', [Tower])
     private towers: Tower[] = [];
+	
+	@JsonProperty('loss', Boolean)
+ 	private loss: boolean = false;
+	
+	@JsonProperty('win', Boolean)
+	private win: boolean = false;
 
     constructor() {
         this.sessionId = '123';
@@ -170,6 +176,18 @@ export class GameState {
         }
         return drawnCard;
     }
+	
+	
+	public drawMonster(): Monster{
+		let drawnMonster: Monster = this.monsters.pop();
+		
+		if (_.isEqual(undefined, drawnMonster)) {
+			// Figure out a way to end the game here.
+			this.win = true;
+//			finishTurn();
+		}
+		return drawnMonster;
+	}
 
     /**
      * Moves all the monsters that are on the board forward or clockwise.
@@ -219,6 +237,15 @@ export class GameState {
     public endTurn(userName: string): boolean {
         if (this.hasStarted() && _.isEqual( this.currentTurn().showPlayerID(), userName) ) {
             this.moveAllMonsters();
+			this.loss = true;
+			for( i = 0; i++; i < this.tower.length ) {
+				if (towers.isStanding(tower[i])){
+					this.loss = false;
+				}
+			}
+			if (this.loss == true){
+				// make class/function call to loss.
+			}
             // TODO: check if game is over
             // TODO: place new monsters
             this.nextTurn();
