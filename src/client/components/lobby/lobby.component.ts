@@ -36,7 +36,7 @@ export class LobbyComponent {
         @Inject(AlertCenterService) private service: AlertCenterService
     ) {
         this.alive = true; 
-        this.interval = 2000; 
+        this.interval = 1000; 
         this.timer = Observable.timer(0, this.interval); 
     }
 
@@ -58,6 +58,14 @@ export class LobbyComponent {
     }
 
     private lobbyInfo() {
+
+        this.gameService.checkSession(this.lobbyid)
+            .subscribe((gameSession) => {
+                if (gameSession.state.started) {
+                    this.router.navigate(['/game', this.lobbyid, this.nickname]);
+                }
+            });
+
         this.gameService.checkUserID(this.lobbyid, this.nickname)
             .subscribe(
                 (checkID) => {
@@ -94,6 +102,13 @@ export class LobbyComponent {
                             });
                     }
             }); 
+    }
+
+    private startGame() {
+        this.gameService.startGame(this.lobbyid, this.nickname)
+            .subscribe((game) => {
+                this.router.navigate(['/game', this.lobbyid, this.nickname]);
+        }); 
     }
 
     private test() {

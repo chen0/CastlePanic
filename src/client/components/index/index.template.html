@@ -34,7 +34,7 @@
       <p>You can still see the game code once you move to the lobby</p>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-default" (click)="toNewLobby()">Go to Lobby</button>
+      <button type="button" class="btn btn-default" (click)="toNewLobby()" (keyup.enter)="toNewLobby()">Go to Lobby</button>
     </div>
   </ng-template>
 
