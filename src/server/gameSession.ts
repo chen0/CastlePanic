@@ -7,7 +7,7 @@ import {Goblin} from './monsters/goblin';
 import {Monster} from './monsters/monster';
 import {Troll} from './monsters/troll';
 import {Player} from './player';
-import {Position} from './position';
+import {Position, Ring} from './position';
 
 export class GameSession {
 
@@ -287,7 +287,7 @@ export class GameSession {
             let result: boolean = false;
             let allMonsters = state.getMonsters();
             if ( monsterIndex < 0 || monsterIndex > allMonsters.length || allMonsters[monsterIndex].isDead() || 
-                 _.isEqual(allMonsters[monsterIndex].position.getRing(), 5)) {
+                 _.isEqual(allMonsters[monsterIndex].position.getRing(), Ring.OFF_BOARD)) {
                 result = false;
             } else {
                 let cards: Card[] = thisPlayer.showCards();
