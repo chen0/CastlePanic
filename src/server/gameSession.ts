@@ -1,10 +1,13 @@
 import * as _ from 'lodash';
 import niceware from 'niceware';
 import {DBConnector} from './database/database';
+import {Card} from './deck/card';
 import {GameState} from './gameState';
 import {Goblin} from './monsters/goblin';
 import {Monster} from './monsters/monster';
 import {Troll} from './monsters/troll';
+import {Player} from './player';
+import {Position, Ring} from './position';
 
 export class GameSession {
 
@@ -153,7 +156,7 @@ export class GameSession {
             }
         });
     }
-    
+
     private code: string;
     private state: GameState;
     private created: Date;
@@ -245,6 +248,60 @@ export class GameSession {
         });
     }
 
+    /**
+     * get a code session, play a card and then save the gamestate
+     * 
+     * @param {(success: boolean) => void} callback     - true if played the card and save the state,
+     *                                                    false if there was an error
+     * @memberof GameSession
+     */
+    public playCard(gameCode: string, name: string, cardIndex: number, monsterIndex: number, 
+                    callback: (success: boolean) => void ) {
+        let success = this.playAndHit(gameCode, name, cardIndex, monsterIndex);
+        if ( _.isEqual(success, true )) {
+            this.save( () => callback(true) );
+        } else {
+            this.save( () => callback(false) );
+        }
+    }
+
+    /**
+     * check if the cardIndex and monsterIndex is correct
+     * hit the monster and remove the played car from the players hand
+     * 
+     * @static
+     * @param {string} gameCode                         - code of game to start
+     * @param {string} name                             - name of user who is starting the game
+     * @param {string} cardIndex                        - the card index to be played
+     * @param {string} cardIndex                        - the monster index to be hit
+     * @param {(success: boolean) => void} callback     - true if card valid and monster valid,
+     *                                                    false if there was an error
+     */
+    public playAndHit( gameCode: string, name: string, cardIndex: number, monsterIndex: number): boolean {
+            let state: GameState = this.getState();
+            let thisPlayer: Player = state.currentTurn();
+
+            if ( thisPlayer.showPlayerID() !== name ) {
+                return false;
+            }
+            let result: boolean = false;
+            let allMonsters = state.getMonsters();
+            if ( monsterIndex < 0 || monsterIndex > allMonsters.length || allMonsters[monsterIndex].isDead() || 
+                 _.isEqual(allMonsters[monsterIndex].position.getRing(), Ring.OFF_BOARD)) {
+                result = false;
+            } else {
+                let cards: Card[] = thisPlayer.showCards();
+                if ( _.isEqual(cards[cardIndex].ring, allMonsters[monsterIndex].position.getRing()) && 
+                     _.isEqual(cards[cardIndex].color, allMonsters[monsterIndex].position.getColor()) ) {
+                    allMonsters[monsterIndex].hit();
+                    result = thisPlayer.playCard(cardIndex);
+                } else {
+                    result = false;
+                }
+            }
+            return result;
+    }
+    
     /**
      * Gets a string representation of the created date
      * 
