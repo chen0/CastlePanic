@@ -83,7 +83,7 @@ export class Monster {
      * @memberof Monster
      */
     public moveForward(towers: Tower[]): boolean {
-        if (!_.isEqual(this.position.getRing(), Ring.OFF_BOARD)) {
+        if (!_.isEqual(this.position.getRing(), Ring.OFF_BOARD) && !this.isDead()) {
 
             // get the next position for the monster
             let newPos: Position = this.position.nextPosition();
