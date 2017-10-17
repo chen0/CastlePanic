@@ -64,6 +64,12 @@ export class GameState {
 
     @JsonProperty('towers', [Tower])
     private towers: Tower[] = [];
+    
+    @JsonProperty('loss', Boolean)
+    private loss: boolean = false;
+    
+    @JsonProperty('win', Boolean)
+    private win: boolean = false;
 
     constructor() {
         this.sessionId = '123';
@@ -171,6 +177,19 @@ export class GameState {
         return drawnCard;
     }
 
+    public drawnMonster(): Monster {
+        let drawnMonster: Monster = this.monsters.pop();
+        
+        if (_.isEqual(undefined, drawnMonster)) {
+            // Figure out a way to end the game here.
+            this.win = true;
+            // here we would make the function call to the class that handles a win condition.
+        } else {
+            Monster.setPosition(drawnMonster);
+        }
+        return drawnMonster;
+    }
+
     /**
      * Moves all the monsters that are on the board forward or clockwise.
      * 
@@ -219,8 +238,23 @@ export class GameState {
     public endTurn(userName: string): boolean {
         if (this.hasStarted() && _.isEqual( this.currentTurn().showPlayerID(), userName) ) {
             this.moveAllMonsters();
-            // TODO: check if game is over
+            this.loss = true;
+            for ( let i = 0; i++; i < this.towers.length ) {
+                if (this.towers[i].isStanding()) {
+                    this.loss = false;
+                }
+            }
+            if (this.loss === true)	{
+                // make class/function call to loss.
+            }
+            // TODONE: check if game is over
             // TODO: place new monsters
+            this.drawnMonster();
+            this.drawnMonster();
+            if ( this.win === true ) {
+                // make class/function call to win.
+            }
+            
             this.nextTurn();
             return true;
         } else {
@@ -231,7 +265,7 @@ export class GameState {
     /**
      * Converts GameState object into a string that can be stored in a database
      * 
-     * @returns {string} 	- string representation of game state
+     * @returns {string}    - string representation of game state
      * @memberof GameState
      */
     public toString(): string {
