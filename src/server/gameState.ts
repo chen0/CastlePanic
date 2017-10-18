@@ -187,10 +187,8 @@ export class GameState {
     public drawnMonsters(): void {
         let randZone = _.shuffle([1, 2, 3, 4, 5, 6]);
         for (let i = 0; i < 2; i++) {
-            let drawnMonster: Monster = this.monsters[this.monsterIndex];
-            this.monsterIndex++;
 
-            if (_.isEqual(undefined, drawnMonster)) {
+            if ( this.monsterIndex >= this.monsters.length ) {
                 // Figure out a way to end the game here.
 
                 this.win = true;
@@ -200,11 +198,13 @@ export class GameState {
                         return false;
                     }
                 });
-
             } else {
+                let drawnMonster: Monster = this.monsters[this.monsterIndex];
+                this.monsterIndex++;
                 let p = new Position(Ring.FOREST, randZone[i] );
                 drawnMonster.setPosition(p);
             }
+
         }
     }
 
