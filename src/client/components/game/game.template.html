@@ -1,11 +1,13 @@
 <div class="container-fluid">
+    <div class="my-alert-center-style">
+        <nac-alert-center [animation]="'decent'" [htmlTextEnabled]="true"></nac-alert-center>
+    </div>
     <div class="row brown-background">
         <div class="col-sm-10 custom-col game-col">
             <div #div class='game-canvas'></div>
         </div>
         <div class="col-sm-2 custom-col">
-                <hand [nickname]='nickname' [players]='playerArray' (cardIndexChanged)="cardIndex($event)"></hand>
+            <hand [nickname]='nickname' [players]='playerArray' (cardIndexChanged)="cardIndex($event)"></hand>
         </div>
     </div>
 </div>
-
