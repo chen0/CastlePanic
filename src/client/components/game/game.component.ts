@@ -32,12 +32,17 @@ export class GameComponent {
     private board: any; 
     private gameSession: any;
     private monsterContainer: any;
+    private wallContainer: any;
     private lobbyid: string;
     private nickname: string;
     private alive: boolean; 
     private timer: Observable<number>; 
     private interval: number; 
     private zoneConstant: number[] = [0, 300, 0, 60, 120, 180, 240];
+    private wallConstant: number[] = [545, 526, 547, 408, 648, 467, 554, 538, 656, 481, 655, 598, 547, 552, 648, 613, 546, 670
+                                    , 530, 553, 529, 670, 428, 610, 523, 540, 421, 599, 421, 482, 530, 525, 428, 466, 530, 408];
+    private wallTextConstant: number[] = [578, 465, 617, 536, 579, 610, 499, 610, 462, 536, 499, 465];
+
 
     @ViewChild('div') div:ElementRef;
 
@@ -59,7 +64,6 @@ export class GameComponent {
       this.board.width = 1080;
       this.board.height = 1080;
       this.stage.addChild(this.board);
-      this.board.mousedown = this.onTouchstart.bind('param', 'test'); 
      
       this.gameLoop();
       this.timer
@@ -77,6 +81,7 @@ export class GameComponent {
         });
         try {
             this.monsterContainer.destroy();
+            this.wallContainer.destroy();
         } catch (Error) { }
         this.monsterContainer = new Container(); 
         let monsterArray = _.filter(this.gameSession.state.monsters, (monster) => {
@@ -110,7 +115,32 @@ export class GameComponent {
                 * Math.sin(this.zoneConstant[_.get(monster, 'position.zone', 1)] / 57.3)); 
             this.monsterContainer.addChild(mContainer); 
         }
+        this.wallContainer = new Container();
+        for (let tower of this.gameSession.state.towers) {
+            if (tower.health === 0) continue;
+            let graphics = new PIXI.Graphics();
+            if (tower.health === 1) graphics.beginFill(0xe15620, 0.9); 
+            else graphics.beginFill(0xDDDDDD, 0.9);
+            graphics.lineStyle(0);
+            graphics.moveTo(this.wallConstant[(tower.position.zone - 1) * 6], this.wallConstant[(tower.position.zone - 1) * 6 + 1]);
+            graphics.lineTo(this.wallConstant[(tower.position.zone - 1) * 6 + 2], this.wallConstant[(tower.position.zone - 1) * 6 + 3]);
+            graphics.lineTo(this.wallConstant[(tower.position.zone - 1) * 6 + 4], this.wallConstant[(tower.position.zone - 1) * 6 + 5]);
+            graphics.lineTo(this.wallConstant[(tower.position.zone - 1) * 6], this.wallConstant[(tower.position.zone - 1) * 6 + 1]);
+            graphics.endFill();
+            let textStyle = new PIXI.TextStyle({
+                wordWrapWidth: 100
+            }); 
+            let wallText = new PIXI.Text(tower.health, textStyle); 
+            wallText.anchor.x = 0.5; 
+            wallText.anchor.y = 0.5;
+            wallText.x = this.wallTextConstant[(tower.position.zone - 1) * 2];
+            wallText.y = this.wallTextConstant[(tower.position.zone - 1) * 2 + 1];
+            this.wallContainer.addChild(graphics); 
+            this.wallContainer.addChild(wallText); 
+        }
+
         this.stage.addChild(this.monsterContainer); 
+        this.stage.addChild(this.wallContainer);
 
         this.renderer.render(this.stage);
     }
