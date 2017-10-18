@@ -16,6 +16,7 @@ export class Api {
         Server.getRouter().post('/api/startGame', this.startGame);
         Server.getRouter().post('/api/endTurn', this.endTurn);
         Server.getRouter().post('/api/playCard', this.playCard);
+        Server.getRouter().post('/api/checkSession', this.checkSession);
     }
 
     /**
@@ -121,6 +122,21 @@ export class Api {
         } else {
             let data = {
                 error: 'Error: Missing parameter(s) in lobby request'
+            };
+            response.json(data);
+        }
+    }
+
+    private checkSession(request: express.Request, response: express.Response): void {
+        let gameCode = _.get( request, 'body.gameCode', '');
+
+        if (!_.isEqual(gameCode, '')) {
+            GameSession.getSession(gameCode, (session: GameSession) => {
+                response.json(session);
+            });
+        } else {
+            let data = {
+                error: 'Error: Missing parameter(s) in session request'
             };
             response.json(data);
         }

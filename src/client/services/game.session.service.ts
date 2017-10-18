@@ -13,6 +13,8 @@ export class GameSessionService {
     public checkGameCodeAPI = 'api/checkGameCode'; 
     public joinGameAPI = 'api/joinGame';
     public lobbyAPI = 'api/lobbyInfo'; 
+    public startGameAPI = 'api/startGame'; 
+    public checkSessionAPI = 'api/checkSession';
     public handleErrorObservable: string;
     public nickName: string;
     public sessionID: string; 
@@ -54,6 +56,22 @@ export class GameSessionService {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({headers: headers}); 
         return this.http.post(this.lobbyAPI, JSON.stringify({gameCode, name}), options)
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json().error || 'Error'));
+    }
+
+    public startGame(gameCode: string, name: string): Observable<any> {
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({headers: headers}); 
+        return this.http.post(this.startGameAPI, JSON.stringify({gameCode, name}), options)
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json().error || 'Error'));
+    }
+
+    public checkSession(gameCode: string): Observable<any> {
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({headers: headers}); 
+        return this.http.post(this.checkSessionAPI, JSON.stringify({gameCode}), options)
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error.json().error || 'Error'));
     }
