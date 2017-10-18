@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ViewChild,ElementRef, Component, Inject, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
 import { Observable } from 'rxjs'; 
@@ -19,10 +19,11 @@ let resources = PIXI.loader.resources;
 let Sprite = PIXI.Sprite;
 
 @Component({
-    selector: 'test',
+    selector: 'game',
     template: template, 
     styles: [css]
 })
+
 export class GameComponent {
     private count: number = 43;
     private ratio: number;
@@ -37,6 +38,8 @@ export class GameComponent {
     private timer: Observable<number>; 
     private interval: number; 
     private zoneConstant: number[] = [0, 300, 0, 60, 120, 180, 240];
+
+    @ViewChild('div') div:ElementRef;
 
     constructor( 
         @Inject(Router) private router: Router, 
@@ -68,7 +71,10 @@ export class GameComponent {
     }
     
     private gameLoop() {
-
+        this.gameService.checkSession(this.lobbyid)
+            .subscribe((gameSession) => {
+                this.gameSession = gameSession;
+        });
         try {
             this.monsterContainer.destroy();
         } catch (Error) { }
@@ -134,11 +140,13 @@ export class GameComponent {
             this.nickname = params['nickname']; 
         }); 
 
-        let size = [1920, 1080];
+        let size = [1080, 1080];
         this.ratio = size[0] / size[1];
         this.stage = new Container();
-        this.renderer = autoDetectRenderer(size[0], size[1]);
-        document.body.appendChild(this.renderer.view);
+        let view1 = document.getElementById('gameBoard');
+        this.renderer = autoDetectRenderer(size[0], size[1], view1);
+        //document.body.appendChild(this.renderer.view);
+
         this.renderer.backgroundColor = 0xdddddd;
 
         this.renderer.view.style.position = 'absolute';
@@ -159,5 +167,9 @@ export class GameComponent {
             .subscribe((gameSession) => {
                 this.gameSession = gameSession;
             });
+    }
+
+    private ngAfterViewInit() {
+        this.div.nativeElement.appendChild(this.renderer.view); 
     }
 }
