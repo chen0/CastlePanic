@@ -15,6 +15,7 @@ export class Api {
         Server.getRouter().post('/api/checkGameCode', this.checkGameCode);
         Server.getRouter().post('/api/startGame', this.startGame);
         Server.getRouter().post('/api/endTurn', this.endTurn);
+        Server.getRouter().post('/api/playCard', this.playCard);
         Server.getRouter().post('/api/checkSession', this.checkSession);
     }
 
@@ -193,6 +194,32 @@ export class Api {
             });
         } else {
             response.json({ success: false, error: 'Error: Missing parameter(s)'});
+        }
+    }
+
+    /**
+     * Requests gameCode, name, cardIndex and monsterIndex from incoming json object
+     * Checks if given all parameters, if so calls playCard, else returns error
+     * Returns boolean of success of playing the card
+     */
+    private playCard(request: express.Request, response: express.Response): void {
+        let gameCode = _.get(request, 'body.gameCode', '');
+        let name = _.get(request, 'body.name', '');
+        let cardIndex = _.get(request, 'body.cardIndex', -1);
+        let monsterIndex = _.get(request, 'body.monsterIndex', -1);
+        
+        if (!_.isEqual(name, '') && !_.isEqual(gameCode, '') && 
+            !_.isEqual(cardIndex, -1) && !_.isEqual(monsterIndex, -1)) {
+            GameSession.getSession(gameCode, (session: GameSession) => {
+                session.playCard(gameCode, name, cardIndex, monsterIndex, (success: boolean) => {
+                    response.json({ success });
+                });
+            });
+        } else {
+            let data = {
+                error: 'Error: Missing parameter(s) in playCard request'
+            };
+            response.json(data);
         }
     }
 }
