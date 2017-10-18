@@ -1,7 +1,9 @@
 import { HandComponent } from '../hand/hand.component';
-import { ViewChild, ElementRef, Component, Inject, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
+import { ViewChild, ElementRef, Component, Inject, OnDestroy, OnInit, AfterViewInit, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Alert, AlertCenterComponent, AlertCenterService, AlertType } from 'ng2-alert-center'; 
+import { Alert, AlertCenterComponent, AlertCenterService, AlertType } from 'ng2-alert-center';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/modal-options.class';
 
 import { Observable } from 'rxjs';
 import { GameSessionService } from '../../services/game.session.service';
@@ -44,11 +46,14 @@ export class GameComponent {
     private wallConstant: number[] = [545, 526, 547, 408, 648, 467, 554, 538, 656, 481, 655, 598, 547, 552, 648, 613, 546, 670
         , 530, 553, 529, 670, 428, 610, 523, 540, 421, 599, 421, 482, 530, 525, 428, 466, 530, 408];
     private wallTextConstant: number[] = [578, 465, 617, 536, 579, 610, 499, 610, 462, 536, 499, 465];
+    public modalRef: BsModalRef;
 
 
     @ViewChild('div') div: ElementRef;
     // reference to child component
     @ViewChild(HandComponent) private hand: HandComponent;
+    @ViewChild('gameOver') private gameOverModal: TemplateRef<any>;
+    private modalOpen: boolean;
 
     // NOTE: you can update the hand component by resetting the value of players
     // this.hand.players = this.playerArray
@@ -74,11 +79,13 @@ export class GameComponent {
         @Inject(Router) private router: Router,
         @Inject(ActivatedRoute) private activatedRoute: ActivatedRoute,
         @Inject(GameSessionService) private gameService: GameSessionService,
-        @Inject(AlertCenterService) private service: AlertCenterService
+        @Inject(AlertCenterService) private service: AlertCenterService,
+        @Inject(BsModalService) private modalService: BsModalService,
     ) {
         this.alive = true;
         this.interval = 1000;
         this.timer = Observable.timer(0, this.interval);
+        this.modalOpen = false;
     }
 
     private setup() {
@@ -112,12 +119,20 @@ export class GameComponent {
 
         this.monsterContainer = new Container();
 
+        if (_.get(this.gameSession, 'state.loss', false) && !this.modalOpen) {
+            this.modalOpen = true;
+            this.openModal(this.gameOverModal);
+        } else if (_.get(this.gameSession, 'state.win', false) && !this.modalOpen) {
+            this.modalOpen = true;
+            this.openModal(this.gameOverModal);
+        }
+
         for (let i = 0; i < this.gameSession.state.monsters.length; i++) {
 
             let monster: any = this.gameSession.state.monsters[i];
             monster.index = i;
 
-            if (_.get(monster, 'position.ring', 5) !== 5) {
+            if (_.get(monster, 'position.ring', 5) !== 5 && _.get(monster, 'health', 0) > 0) {
 
                 let textStyle = new PIXI.TextStyle({
                     wordWrapWidth: 100
@@ -128,7 +143,7 @@ export class GameComponent {
                 graphics.drawCircle(50, 50, 50);
                 graphics.endFill();
                 graphics.interactive = true;
-                graphics.mousedown = this.onTouchstart.bind('param', {monster, ref: this});
+                graphics.mousedown = this.onTouchstart.bind('param', { monster, ref: this });
                 let monsterNameAndHealth = _.get(monster, 'type', '') + '\nHP: ' + _.get(monster, 'health', 0);
                 let monsterText = new PIXI.Text(monsterNameAndHealth, textStyle);
                 monsterText.anchor.x = 0.5;
@@ -178,15 +193,21 @@ export class GameComponent {
 
     private onTouchstart(param, e) {
         if (!_.isEqual(param.ref.selectedCard, -1)) {
-            param.ref.gameService.playCard(param.ref.nickname, param.ref.lobbyid, param.monster.index, param.ref.selectedCard)
-                .subscribe((result) => {
-                    if ( result.success ) {
-                        param.ref.hand.reset();
-                    } else {
-                        const alert = Alert.create(AlertType.DANGER, '<b>You cannot play that card there</b>', 5000);
-                        param.ref.service.alert(alert);
-                    }
-                });
+            if (_.isEqual(param.ref.currentTurn(), param.ref.nickname)) {
+                param.ref.gameService.playCard(param.ref.nickname, param.ref.lobbyid, param.monster.index, param.ref.selectedCard)
+                    .subscribe((result) => {
+                        if (result.success) {
+                            param.ref.hand.reset();
+                        } else {
+                            const alert = Alert.create(AlertType.DANGER, '<b>You cannot play that card there</b>', 5000);
+                            param.ref.service.alert(alert);
+                        }
+                    });
+            } else {
+                const alert = Alert.create(AlertType.WARNING, '<b>Wait until your turn</b>', 5000);
+                param.ref.service.alert(alert);
+                param.ref.hand.reset();
+            }
         }
     }
 
@@ -265,5 +286,20 @@ export class GameComponent {
      */
     private cardIndex(index: number) {
         this.selectedCard = index;
+    }
+
+    private openModal(template: TemplateRef<any>) {
+        this.modalRef = this.modalService.show(template);
+    }
+
+    private backToMenu() {
+        this.router.navigate(['/']);
+        this.modalRef.hide();
+    }
+
+    public currentTurn(): string {
+        let index = _.get(this.gameSession, 'state.turnNum', 0) % _.get(this.gameSession, 'state.players.length', 0);
+        let player = this.gameSession.state.players[index];
+        return _.get(player, 'userid', '');
     }
 }

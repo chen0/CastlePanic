@@ -103,7 +103,7 @@ export class Monster {
             let newPos: Position = this.position.nextPosition();
 
             // if a monster doesn't exist in the new position move forward
-            let monster = _.find(monsters, (m: Monster) => m.getPosition().isEqual(newPos));
+            let monster = _.find(monsters, (m: Monster) => m.getPosition().isEqual(newPos) && !m.isDead());
             if (!monster) {
 
                 // if a tower is still standing and at that position deal damage
