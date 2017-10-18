@@ -50,6 +50,9 @@ export class GameState {
     @JsonProperty('monsters', [Monster])
     private monsters: Monster[] = [];
 
+    @JsonProperty('monsterIndex', Number)
+    private monsterIndex: number = 0;
+
     @JsonProperty('players', [Player])
     private players: Player[] = [];
 
@@ -80,6 +83,7 @@ export class GameState {
         this.cards = [];
         this.towers = [];
         this.started = false;
+        this.monsterIndex = 0;
     }
 
     public setSessionID(sessionid: string): void {
@@ -164,7 +168,10 @@ export class GameState {
                 }
             });
 
-            // TODO randomly place first set of monsters
+            // randomly place first set of monsters
+            this.drawnMonster();
+            this.drawnMonster();
+
         }
     }
 
@@ -178,12 +185,20 @@ export class GameState {
     }
 
     public drawnMonster(): Monster {
-        let drawnMonster: Monster = this.monsters.pop();
+        let drawnMonster: Monster = this.monsters[this.monsterIndex];
+        this.monsterIndex++;
         
         if (_.isEqual(undefined, drawnMonster)) {
             // Figure out a way to end the game here.
+
             this.win = true;
-            // here we would make the function call to the class that handles a win condition.
+            _.forEach(this.monsters, (monster: Monster) => {
+                if ( !monster.isDead() ) {
+                    this.win = false;
+                    return false;
+                }
+            });
+
         } else {
             Monster.setPosition(drawnMonster);
         }
@@ -247,8 +262,7 @@ export class GameState {
             if (this.loss === true)	{
                 // make class/function call to loss.
             }
-            // TODONE: check if game is over
-            // TODO: place new monsters
+
             this.drawnMonster();
             this.drawnMonster();
             if ( this.win === true ) {
