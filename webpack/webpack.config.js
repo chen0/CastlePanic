@@ -130,7 +130,7 @@ var client = {
   },
   plugins: [
     copyWebpack,
-    forkTsChecker,
+    forkTsChecker, 
     htmlWebpack,
     contextReplacement/* ,
     uglifyJs */

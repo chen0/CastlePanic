@@ -110,8 +110,4 @@ export class LobbyComponent {
                 this.router.navigate(['/game', this.lobbyid, this.nickname]);
         }); 
     }
-
-    private test() {
-        this.router.navigate(['/test']);
-    }
 }
