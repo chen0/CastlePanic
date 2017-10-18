@@ -5,6 +5,7 @@ import { CardToolkit } from './deck/cardtoolkit';
 import { Monster } from './monsters/monster';
 import { MonsterToolkit } from './monsters/toolkit';
 import { Player } from './player';
+import { Position, Ring} from './position';
 import { Tower } from './tower';
 
 @JsonObject
@@ -50,6 +51,9 @@ export class GameState {
     @JsonProperty('monsters', [Monster])
     private monsters: Monster[] = [];
 
+    @JsonProperty('monsterIndex', Number)
+    private monsterIndex: number = 0;
+
     @JsonProperty('players', [Player])
     private players: Player[] = [];
 
@@ -65,6 +69,12 @@ export class GameState {
     @JsonProperty('towers', [Tower])
     private towers: Tower[] = [];
 
+    @JsonProperty('loss', Boolean)
+    private loss: boolean = false;
+
+    @JsonProperty('win', Boolean)
+    private win: boolean = false;
+
     constructor() {
         this.sessionId = '123';
         this.monsters = [];
@@ -74,6 +84,7 @@ export class GameState {
         this.cards = [];
         this.towers = [];
         this.started = false;
+        this.monsterIndex = 0;
     }
 
     public setSessionID(sessionid: string): void {
@@ -158,7 +169,9 @@ export class GameState {
                 }
             });
 
-            // TODO randomly place first set of monsters
+            // randomly place first set of monsters
+            this.drawnMonsters();
+
         }
     }
 
@@ -171,6 +184,30 @@ export class GameState {
         return drawnCard;
     }
 
+    public drawnMonsters(): void {
+        let randZone = _.shuffle([1, 2, 3, 4, 5, 6]);
+        for (let i = 0; i < 2; i++) {
+
+            if ( this.monsterIndex >= this.monsters.length ) {
+                // Figure out a way to end the game here.
+
+                this.win = true;
+                _.forEach(this.monsters, (monster: Monster) => {
+                    if (!monster.isDead()) {
+                        this.win = false;
+                        return false;
+                    }
+                });
+            } else {
+                let drawnMonster: Monster = this.monsters[this.monsterIndex];
+                this.monsterIndex++;
+                let p = new Position(Ring.FOREST, randZone[i] );
+                drawnMonster.setPosition(p);
+            }
+
+        }
+    }
+
     /**
      * Moves all the monsters that are on the board forward or clockwise.
      * 
@@ -181,10 +218,10 @@ export class GameState {
 
         _.forEach(this.monsters, (monster) => {
             // move monster forward
-            let killed: boolean = monster.moveForward(this.towers);
+            let killed: boolean = monster.moveForward(this.towers, this.monsters);
 
-            if ( !killed ) {
-                remainingMonsters.push( monster );
+            if (!killed) {
+                remainingMonsters.push(monster);
             }
         });
 
@@ -204,7 +241,7 @@ export class GameState {
 
         // draw up
         for (let i = 0; i < numCards; i++) {
-            player.addCard( this.drawCard() );
+            player.addCard(this.drawCard());
         }
     }
 
@@ -217,10 +254,23 @@ export class GameState {
      * @memberof GameState
      */
     public endTurn(userName: string): boolean {
-        if (this.hasStarted() && _.isEqual( this.currentTurn().showPlayerID(), userName) ) {
+        if (this.hasStarted() && _.isEqual(this.currentTurn().showPlayerID(), userName)) {
             this.moveAllMonsters();
-            // TODO: check if game is over
-            // TODO: place new monsters
+            this.loss = true;
+            for (let i = 0; i++; i < this.towers.length) {
+                if (this.towers[i].isStanding()) {
+                    this.loss = false;
+                }
+            }
+            if (this.loss === true) {
+                // make class/function call to loss.
+            }
+
+            this.drawnMonsters();
+            if (this.win === true) {
+                // make class/function call to win.
+            }
+
             this.nextTurn();
             return true;
         } else {
@@ -231,7 +281,7 @@ export class GameState {
     /**
      * Converts GameState object into a string that can be stored in a database
      * 
-     * @returns {string} 	- string representation of game state
+     * @returns {string}    - string representation of game state
      * @memberof GameState
      */
     public toString(): string {

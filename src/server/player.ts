@@ -37,17 +37,8 @@ export class Player {
      * @returns {boolean} 
      */
     public addCard(card: Card): boolean {
+        this.numCards++;
         this.cards.push(card);
-        return false; 
-    }
-
-    /**
-     * Discard the specific card
-     * 
-     * @returns {boolean} 
-     */
-    public discardCard(cardID: string): boolean {
-        this.numCards--;
         return false; 
     }
 
@@ -56,9 +47,24 @@ export class Player {
      * 
      * @returns [card]
      */
-    public playCards(cardID: string[]): boolean {
-        this.numCards = this.numCards - cardID.length;
-        return false; 
+    public playCard(cardIndex: number): boolean {
+        let cardsNotPlayed: Card[] = [];
+        let played: boolean = false;
+
+        if ( cardIndex > 5 || cardIndex < 0) {
+            return played;
+        } else {
+            for (let i = 0; i < this.cards.length; i++) {
+                if ( i !== cardIndex ) {
+                    cardsNotPlayed.push( this.cards[i] );
+                }
+            }
+            this.cards = cardsNotPlayed;
+            played = true;
+        }
+        
+        this.numCards--;
+        return played; 
     }
 
     /**

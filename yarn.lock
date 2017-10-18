@@ -102,7 +102,7 @@
   version "8.0.28"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.0.28.tgz#86206716f8d9251cf41692e384264cbd7058ad60"
 
-"@types/pixi.js@^4.5.7":
+"@types/pixi.js@^4.5.6":
   version "4.5.7"
   resolved "https://registry.yarnpkg.com/@types/pixi.js/-/pixi.js-4.5.7.tgz#a17d6c3c164ccdabcc86d290ba28f2b3730f2e7d"
 
@@ -2489,7 +2489,7 @@ pixi-gl-core@^1.0.3:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/pixi-gl-core/-/pixi-gl-core-1.1.0.tgz#a52cb4dd3254f9c7857a0e9c2356b00e6ec0c761"
 
-pixi.js@^4.5.6:
+pixi.js@^4.5.1:
   version "4.5.6"
   resolved "https://registry.yarnpkg.com/pixi.js/-/pixi.js-4.5.6.tgz#54914e7935f9a9e346923b9f424e52fa417593cd"
   dependencies:

@@ -1,14 +1,11 @@
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-10">
-            <div>
-                <p> here is some stuff</p>
-                <p>selected card {{selectedCard}}</p>
-                <button (click)="reset()">Reset Selection</button>
-            </div>
+    <div class="row brown-background">
+        <div class="col-sm-10 custom-col game-col">
+            <div #div class='game-canvas'></div>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-2 custom-col">
                 <hand [nickname]='nickname' [players]='playerArray' (cardIndexChanged)="cardIndex($event)"></hand>
         </div>
     </div>
 </div>
+
