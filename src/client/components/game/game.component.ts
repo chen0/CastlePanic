@@ -1,3 +1,4 @@
+import {HandComponent} from '../hand/hand.component';
 import { ViewChild,ElementRef, Component, Inject, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
@@ -45,6 +46,26 @@ export class GameComponent {
 
 
     @ViewChild('div') div:ElementRef;
+    // reference to child component
+    @ViewChild(HandComponent) private hand: HandComponent;
+    
+    // NOTE: you can update the hand component by resetting the value of players
+    // this.hand.players = this.playerArray
+
+    /**
+     * Mock player Array to pass into hand component
+     */
+    private playerArray: any[] = [{userid: 'ben', cards: [
+        {type: 'BlueArcher', ring: 0, color: 0},
+        {type: 'GreenKnight', ring: 0, color: 0},
+        {type: 'RedSwordsman', ring: 0, color: 0},
+        {type: 'BlueSwordsman', ring: 0, color: 0},
+        {type: 'GreenArcher', ring: 0, color: 0},
+        {type: 'RedArcher', ring: 0, color: 0}
+    ]}];
+
+    // card selected in hand
+    private selectedCard: number = -1;
 
     constructor( 
         @Inject(Router) private router: Router, 
@@ -78,11 +99,13 @@ export class GameComponent {
         this.gameService.checkSession(this.lobbyid)
             .subscribe((gameSession) => {
                 this.gameSession = gameSession;
+                this.playerArray = _.get(gameSession,'state.players',[]);
         });
         try {
             this.monsterContainer.destroy();
             this.wallContainer.destroy();
         } catch (Error) { }
+
         this.monsterContainer = new Container(); 
         let monsterArray = _.filter(this.gameSession.state.monsters, (monster) => {
             return _.get(monster, 'position.ring', 5) !== 5; 
@@ -150,15 +173,18 @@ export class GameComponent {
     }
 
     private resize() {
+        let parentWidth = this.div.nativeElement.offsetWidth;
+        let parentHeight = window.innerHeight;
         let w;
         let h;
-        if (window.innerWidth / window.innerHeight >= this.ratio) {
-            w = window.innerHeight * this.ratio;
-            h = window.innerHeight;
+        if (parentWidth / parentHeight >= this.ratio) {
+            w = parentHeight * this.ratio;
+            h = parentHeight;
         } else {
-            w = window.innerWidth;
-            h = window.innerWidth / this.ratio;
+            w = parentWidth;
+            h = parentWidth / this.ratio;
         }
+        
         this.renderer.view.style.width = w + 'px';
         this.renderer.view.style.height = h + 'px';
     }
@@ -167,7 +193,8 @@ export class GameComponent {
 
         this.activatedRoute.params.subscribe((params: Params) => {
             this.lobbyid = params['sessionid']; 
-            this.nickname = params['nickname']; 
+            this.nickname = params['nickname'];
+            // TODO ben
         }); 
 
         let size = [1080, 1080];
@@ -179,10 +206,8 @@ export class GameComponent {
 
         this.renderer.backgroundColor = 0xdddddd;
 
-        this.renderer.view.style.position = 'absolute';
         this.renderer.view.style.left = '50%';
         this.renderer.view.style.top = '50%';
-        this.renderer.view.style.transform = 'translate3d( -50%, -50%, 0 )';
 
         loader
           .add('board.jpg')
@@ -201,5 +226,27 @@ export class GameComponent {
 
     private ngAfterViewInit() {
         this.div.nativeElement.appendChild(this.renderer.view); 
+    }
+
+     /**
+     * Reset the hand component
+     * 
+     * @private
+     * @memberof GameComponent
+     */
+    private reset() {
+        this.hand.reset();
+        this.selectedCard = -1;
+    }
+
+    /**
+     * Updates the selectedCard index, called by child component
+     * 
+     * @private
+     * @param {number} index 
+     * @memberof GameComponent
+     */
+    private cardIndex(index: number) {
+        this.selectedCard = index;
     }
 }

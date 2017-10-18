@@ -13,6 +13,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { Game } from '../services/game';
 import { GameSessionService } from '../services/game.session.service';
 import { AppRoutingModule, routingComponents } from './app.routing';
+import { HandComponent } from './hand/hand.component';
 import { MainComponent } from './main/main.component';
 
 @NgModule({
@@ -29,7 +30,8 @@ import { MainComponent } from './main/main.component';
     ],
     declarations: [
         MainComponent,
-        routingComponents,        
+        routingComponents,
+        HandComponent,        
     ],
     bootstrap: [
         MainComponent, 

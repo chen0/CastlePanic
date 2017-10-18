@@ -5,3 +5,15 @@ canvas {
     margin: 0;
     /*left: 50%;*/
 }
+
+.brown-background {
+    background-color: rgb(99, 63, 44);
+}
+
+.game-col {
+    max-width: 989px;
+}
+
+.custom-col {
+    padding: 0;
+}

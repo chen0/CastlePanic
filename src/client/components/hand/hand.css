@@ -1,0 +1,41 @@
+.hand-container {
+    background-color: rgb(99, 63, 44);
+    min-height: -webkit-fill-available;
+    max-width: -webkit-fill-available;
+    text-align: center;
+    padding: 0;
+}
+
+.card-list {
+    margin: auto;
+}
+
+.card > img {
+    position: relative;
+	width: 90px;
+	min-height: 90px;
+    margin: 10px 10px;
+    border: 1px solid #1f1d1d;
+    border-radius: 5px;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.card > img:hover {
+    box-shadow: 2px 2px 10px #DDDDDD;     
+}
+
+.card-selected > img {
+    border: 3px solid black;
+}
+
+@media only screen and (max-width: 767px) {
+
+    .hand-container {
+        display: inline-block;
+        width: -webkit-fill-available;
+    }
+
+    .card.col-xl-2 {
+        display: inline;
+    }
+}
