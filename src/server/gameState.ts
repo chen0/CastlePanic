@@ -68,10 +68,10 @@ export class GameState {
 
     @JsonProperty('towers', [Tower])
     private towers: Tower[] = [];
-
+    
     @JsonProperty('loss', Boolean)
     private loss: boolean = false;
-
+    
     @JsonProperty('win', Boolean)
     private win: boolean = false;
 

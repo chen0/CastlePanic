@@ -8,9 +8,9 @@ import { Troll } from './troll';
 
 @JsonObject
 export class Monster {
-
+    
     public static setPosition(monster: Monster) {
-        monster.position = new Position(Ring.FOREST, _.sample([1, 2, 3, 4, 5, 6]));
+        monster.position = new Position( Ring.FOREST, _.sample([1, 2, 3, 4, 5, 6]));
     }
 
     @JsonProperty('type', String)
@@ -27,7 +27,7 @@ export class Monster {
         this.type = type;
         this.position = position;
     }
-
+    
     /**
      * Inflicts a normal hit on a monster
      * 
