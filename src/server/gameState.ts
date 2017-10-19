@@ -205,7 +205,7 @@ export class GameState {
                 // makes sure you cannot draw two monsters to the same position
                 let j = 0;
                 let p = new Position(Ring.FOREST, randZone[i + j] );
-                while( _.find(this.monsters, (m: Monster) => m.getPosition().isEqual(p) ) ) {
+                while ( _.find(this.monsters, (m: Monster) => m.getPosition().isEqual(p) ) ) {
                     j++;
                     p = new Position(Ring.FOREST, randZone[i + j] );
                 }
