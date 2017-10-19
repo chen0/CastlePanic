@@ -5,6 +5,7 @@ import { CardToolkit } from './deck/cardtoolkit';
 import { Monster } from './monsters/monster';
 import { MonsterToolkit } from './monsters/toolkit';
 import { Player } from './player';
+import { Position, Ring} from './position';
 import { Tower } from './tower';
 
 @JsonObject
@@ -50,6 +51,9 @@ export class GameState {
     @JsonProperty('monsters', [Monster])
     private monsters: Monster[] = [];
 
+    @JsonProperty('monsterIndex', Number)
+    private monsterIndex: number = 0;
+
     @JsonProperty('players', [Player])
     private players: Player[] = [];
 
@@ -80,6 +84,7 @@ export class GameState {
         this.cards = [];
         this.towers = [];
         this.started = false;
+        this.monsterIndex = 0;
     }
 
     public setSessionID(sessionid: string): void {
@@ -164,7 +169,9 @@ export class GameState {
                 }
             });
 
-            // TODO randomly place first set of monsters
+            // randomly place first set of monsters
+            this.drawnMonsters();
+
         }
     }
 
@@ -177,17 +184,35 @@ export class GameState {
         return drawnCard;
     }
 
-    public drawnMonster(): Monster {
-        let drawnMonster: Monster = this.monsters.pop();
-        
-        if (_.isEqual(undefined, drawnMonster)) {
-            // Figure out a way to end the game here.
-            this.win = true;
-            // here we would make the function call to the class that handles a win condition.
-        } else {
-            Monster.setPosition(drawnMonster);
+    public drawnMonsters(): void {
+        let randZone = _.shuffle([1, 2, 3, 4, 5, 6]);
+        for (let i = 0; i < 2; i++) {
+
+            if ( this.monsterIndex >= this.monsters.length ) {
+                // Figure out a way to end the game here.
+
+                this.win = true;
+                _.forEach(this.monsters, (monster: Monster) => {
+                    if (!monster.isDead()) {
+                        this.win = false;
+                        return false;
+                    }
+                });
+            } else {
+                let drawnMonster: Monster = this.monsters[this.monsterIndex];
+                this.monsterIndex++;
+                
+                // makes sure you cannot draw two monsters to the same position
+                let j = 0;
+                let p = new Position(Ring.FOREST, randZone[i + j] );
+                while ( _.find(this.monsters, (m: Monster) => m.getPosition().isEqual(p) ) ) {
+                    j++;
+                    p = new Position(Ring.FOREST, randZone[i + j] );
+                }
+                drawnMonster.setPosition(p);
+            }
+
         }
-        return drawnMonster;
     }
 
     /**
@@ -200,10 +225,10 @@ export class GameState {
 
         _.forEach(this.monsters, (monster) => {
             // move monster forward
-            let killed: boolean = monster.moveForward(this.towers);
+            let killed: boolean = monster.moveForward(this.towers, this.monsters);
 
-            if ( !killed ) {
-                remainingMonsters.push( monster );
+            if (!killed) {
+                remainingMonsters.push(monster);
             }
         });
 
@@ -223,7 +248,7 @@ export class GameState {
 
         // draw up
         for (let i = 0; i < numCards; i++) {
-            player.addCard( this.drawCard() );
+            player.addCard(this.drawCard());
         }
     }
 
@@ -236,25 +261,18 @@ export class GameState {
      * @memberof GameState
      */
     public endTurn(userName: string): boolean {
-        if (this.hasStarted() && _.isEqual( this.currentTurn().showPlayerID(), userName) ) {
+        if (this.hasStarted() && _.isEqual(this.currentTurn().showPlayerID(), userName)) {
             this.moveAllMonsters();
-            this.loss = true;
-            for ( let i = 0; i++; i < this.towers.length ) {
-                if (this.towers[i].isStanding()) {
-                    this.loss = false;
-                }
+
+            let standingTowers = _.filter(this.towers, (t: Tower) => t.isStanding());
+            if ( _.isEqual( standingTowers.length, 0) ) {
+                this.loss = true;
+            } else {
+                this.loss = false;
             }
-            if (this.loss === true)	{
-                // make class/function call to loss.
-            }
-            // TODONE: check if game is over
-            // TODO: place new monsters
-            this.drawnMonster();
-            this.drawnMonster();
-            if ( this.win === true ) {
-                // make class/function call to win.
-            }
-            
+
+            this.drawnMonsters();
+
             this.nextTurn();
             return true;
         } else {

@@ -13,6 +13,10 @@ export class GameSessionService {
     public checkGameCodeAPI = 'api/checkGameCode'; 
     public joinGameAPI = 'api/joinGame';
     public lobbyAPI = 'api/lobbyInfo'; 
+    public startGameAPI = 'api/startGame'; 
+    public checkSessionAPI = 'api/checkSession';
+    public playCardAPI = 'api/playCard';
+    public endTurnAPI = 'api/endTurn';
     public handleErrorObservable: string;
     public nickName: string;
     public sessionID: string; 
@@ -57,4 +61,36 @@ export class GameSessionService {
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error.json().error || 'Error'));
     }
+
+    public startGame(gameCode: string, name: string): Observable<any> {
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({headers: headers}); 
+        return this.http.post(this.startGameAPI, JSON.stringify({gameCode, name}), options)
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json().error || 'Error'));
+    }
+
+    public checkSession(gameCode: string): Observable<any> {
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({headers: headers}); 
+        return this.http.post(this.checkSessionAPI, JSON.stringify({gameCode}), options)
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json().error || 'Error'));
+    }
+
+    public playCard(name: string, gameCode: string, monsterIndex: number, cardIndex: number): Observable<any> {
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({headers: headers}); 
+        return this.http.post(this.playCardAPI, JSON.stringify({name, gameCode, monsterIndex, cardIndex}), options)
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json().error || 'Error'));
+    }
+    public endTurn(gameCode: string, name: string): Observable<any> {
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({headers: headers}); 
+        return this.http.post(this.endTurnAPI, JSON.stringify({gameCode, name}), options)
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json().error || 'Error'));
+    }
+
 }

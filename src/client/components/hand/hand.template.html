@@ -1,0 +1,10 @@
+<div class='container hand-container'>
+    <div class="row card-list">
+        <div *ngFor="let card of cards; let i = index" (click)="selectCard(i)" class='card col-xl-2' [ngClass]="{'card-selected': i === selectedCardIndex}">
+            <img src="{{ getImageUrl(card.type) }}">
+        </div>
+    </div>
+    <div class='row' id='endTurnB'>
+		<button type="button" class="btn btn-danger" (click)="sendEndTurn()">End Turn</button>
+    </div>
+</div>

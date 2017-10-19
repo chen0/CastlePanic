@@ -78,6 +78,16 @@ export class Monster {
     }
 
     /**
+     * Gets the position of the monster
+     * 
+     * @returns {Position} - position of the monster
+     * @memberof Monster
+     */
+    public getPosition(): Position {
+        return this.position;
+    }
+
+    /**
      * Moves the monster forward or clockwise if the monster is on the board.
      * If a tower is in it's way it deals damage to the tower and itself.
      * Monster does not move if it deals damage to a tower.
@@ -86,22 +96,38 @@ export class Monster {
      * @returns {boolean}          - true if monster was killed, false if monster survived
      * @memberof Monster
      */
-    public moveForward(towers: Tower[]): boolean {
+    public moveForward(towers: Tower[], monsters: Monster[]): boolean {
         if (!_.isEqual(this.position.getRing(), Ring.OFF_BOARD) && !this.isDead()) {
 
             // get the next position for the monster
             let newPos: Position = this.position.nextPosition();
 
-            // if a tower is still standing and at that position deal damage
-            let tower = _.find(towers, (t: Tower) => t.getPosition().isEqual(newPos));
-            if (tower && tower.isStanding()) {
-                tower.hit();
-                return this.hit();
-            }
+            // if a monster doesn't exist in the new position move forward
+            let monster = _.find(monsters, (m: Monster) => m.getPosition().isEqual(newPos) && !m.isDead());
+            if (!monster) {
 
-            // move monster
-            this.position = newPos;
+                // if a tower is still standing and at that position deal damage
+                let tower = _.find(towers, (t: Tower) => t.getPosition().isEqual(newPos));
+                if (tower && tower.isStanding()) {
+                    tower.hit();
+                    return this.hit();
+                }
+
+                // move monster
+                this.position = newPos;
+            }
+            
         }
         return false;
+    }
+
+    /**
+     * Sets the position of the monster
+     * 
+     * @param {Position} position - new position of the monster
+     * @memberof Monster
+     */
+    public setPosition(position: Position) {
+        this.position = position;
     }
 }
