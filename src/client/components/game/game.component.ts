@@ -1,15 +1,16 @@
-import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-
-import {HandComponent} from '../hand/hand.component';
-
-import { Observable } from 'rxjs'; 
+import { Alert, AlertCenterComponent, AlertCenterService, AlertType } from 'ng2-alert-center';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/modal-options.class';
+import { Observable } from 'rxjs';
 import { GameSessionService } from '../../services/game.session.service';
+import { HandComponent } from '../hand/hand.component';
 
 import css from './game.css';
 import template from './game.template.html';
 
-import * as _ from 'lodash'; 
+import * as _ from 'lodash';
 import * as PIXII from 'pixi.js';
 
 let PIXI: any = PIXII;
@@ -21,14 +22,15 @@ let Sprite = PIXI.Sprite;
 
 @Component({
     selector: 'game',
-    template: template, 
+    template: template,
     styles: [css]
 })
 
 export class GameComponent {
+    public modalRef: BsModalRef;
     private count: number = 43;
     private ratio: number;
-    private stage: any; 
+    private stage: any;
     private renderer: any;
     private loader: any;
     private board: any; 
@@ -37,9 +39,9 @@ export class GameComponent {
     private wallContainer: any;
     private lobbyid: string;
     private nickname: string;
-    private alive: boolean; 
-    private timer: Observable<number>; 
-    private interval: number; 
+    private alive: boolean;
+    private timer: Observable<number>;
+    private interval: number;
     private zoneConstant: number[] = [0, 300, 0, 60, 120, 180, 240];
     private wallConstant: number[] = [545, 526, 547, 408, 648, 467, 554, 538, 656, 481, 655, 598, 547, 552, 648, 613,
                                       546, 670, 530, 553, 529, 670, 428, 610, 523, 540, 421, 599, 421, 482, 530, 525,
@@ -48,24 +50,35 @@ export class GameComponent {
     private playerArray: any;
     private turnNum: number; 
 
-    @ViewChild('div') public div: ElementRef;
+    @ViewChild('div') private div: ElementRef;
     // reference to child component
     @ViewChild(HandComponent) private hand: HandComponent;
-    
+    @ViewChild('gameOver') private gameOverModal: TemplateRef<any>;
+    private modalOpen: boolean;
+
     // NOTE: you can update the hand component by resetting the value of players
     // this.hand.players = this.playerArray
 
     // card selected in hand
     private selectedCard: number = -1;
 
-    constructor( 
-        @Inject(Router) private router: Router, 
-        @Inject(ActivatedRoute) private activatedRoute: ActivatedRoute, 
-        @Inject(GameSessionService) private gameService: GameSessionService
+    constructor(
+        @Inject(Router) private router: Router,
+        @Inject(ActivatedRoute) private activatedRoute: ActivatedRoute,
+        @Inject(GameSessionService) private gameService: GameSessionService,
+        @Inject(AlertCenterService) private service: AlertCenterService,
+        @Inject(BsModalService) private modalService: BsModalService,
     ) {
-        this.alive = true; 
-        this.interval = 1000; 
-        this.timer = Observable.timer(0, this.interval); 
+        this.alive = true;
+        this.interval = 1000;
+        this.timer = Observable.timer(0, this.interval);
+        this.modalOpen = false;
+    }
+
+    public currentTurn(): string {
+        let index = _.get(this.gameSession, 'state.turnNum', 0) % _.get(this.gameSession, 'state.players.length', 0);
+        let player = this.gameSession.state.players[index];
+        return _.get(player, 'userid', '');
     }
 
     private setup() {
@@ -85,7 +98,7 @@ export class GameComponent {
           });
       this.resize();
     }
-    
+
     private gameLoop() {
         this.gameService.checkSession(this.lobbyid)
             .subscribe((gameSession) => {
@@ -96,39 +109,51 @@ export class GameComponent {
         try {
             this.monsterContainer.destroy();
             this.wallContainer.destroy();
-        } catch (Error) { }
+        } catch (Error) { /* empty */ }
 
-        this.monsterContainer = new Container(); 
-        let monsterArray = _.filter(this.gameSession.state.monsters, (monster) => {
-            return _.get(monster, 'position.ring', 5) !== 5; 
-        }); 
-        for (let monster of monsterArray) {
+        this.monsterContainer = new Container();
 
-            let textStyle = new PIXI.TextStyle({
-                wordWrapWidth: 100
-            }); 
-            let graphics = new PIXI.Graphics(); 
-            graphics.lineStyle(0);
-            graphics.beginFill(0xFFFF0B, 0.5);
-            graphics.drawCircle(50, 50, 50);
-            graphics.endFill();
-            graphics.interactive = true;
-            graphics.mousedown = this.onTouchstart.bind('param', monster); 
-            let monsterNameAndHealth = _.get(monster, 'type', '') + '\nHP: ' + _.get(monster, 'health', 0); 
-            let monsterText = new PIXI.Text(monsterNameAndHealth, textStyle); 
-            monsterText.anchor.x = 0.5;
-            monsterText.anchor.y = 0.5;
-            monsterText.x = 50; 
-            monsterText.y = 50; 
-            let mContainer = new Container(); 
-            mContainer.addChild(graphics); 
-            mContainer.addChild(monsterText); 
-            mContainer.position.set(
-                (539 - 50) + ((_.get(monster, 'position.ring', 5) + 1) * 95) 
-                * Math.cos(this.zoneConstant[_.get(monster, 'position.zone', 1)] / 57.3), 
-                (539 - 50) + ((_.get(monster, 'position.ring', 5) + 1) * 95) 
-                * Math.sin(this.zoneConstant[_.get(monster, 'position.zone', 1)] / 57.3)); 
-            this.monsterContainer.addChild(mContainer); 
+        if (_.get(this.gameSession, 'state.loss', false) && !this.modalOpen) {
+            this.modalOpen = true;
+            this.openModal(this.gameOverModal);
+        } else if (_.get(this.gameSession, 'state.win', false) && !this.modalOpen) {
+            this.modalOpen = true;
+            this.openModal(this.gameOverModal);
+        }
+
+        for (let i = 0; i < this.gameSession.state.monsters.length; i++) {
+
+            let monster: any = this.gameSession.state.monsters[i];
+            monster.index = i;
+
+            if (_.get(monster, 'position.ring', 5) !== 5 && _.get(monster, 'health', 0) > 0) {
+
+                let textStyle = new PIXI.TextStyle({
+                    wordWrapWidth: 100
+                });
+                let graphics = new PIXI.Graphics();
+                graphics.lineStyle(0);
+                graphics.beginFill(0xFFFF0B, 0.5);
+                graphics.drawCircle(50, 50, 50);
+                graphics.endFill();
+                graphics.interactive = true;
+                graphics.mousedown = this.onTouchstart.bind('param', { monster, ref: this });
+                let monsterNameAndHealth = _.get(monster, 'type', '') + '\nHP: ' + _.get(monster, 'health', 0);
+                let monsterText = new PIXI.Text(monsterNameAndHealth, textStyle);
+                monsterText.anchor.x = 0.5;
+                monsterText.anchor.y = 0.5;
+                monsterText.x = 50;
+                monsterText.y = 50;
+                let mContainer = new Container();
+                mContainer.addChild(graphics);
+                mContainer.addChild(monsterText);
+                mContainer.position.set(
+                    (539 - 50) + ((_.get(monster, 'position.ring', 5) + 1) * 95)
+                    * Math.cos(this.zoneConstant[_.get(monster, 'position.zone', 1)] / 57.3),
+                    (539 - 50) + ((_.get(monster, 'position.ring', 5) + 1) * 95)
+                    * Math.sin(this.zoneConstant[_.get(monster, 'position.zone', 1)] / 57.3));
+                this.monsterContainer.addChild(mContainer);
+            }
         }
         this.wallContainer = new Container();
         for (let tower of this.gameSession.state.towers) {
@@ -153,24 +178,41 @@ export class GameComponent {
             graphics.endFill();
             let textStyle = new PIXI.TextStyle({
                 wordWrapWidth: 100
-            }); 
-            let wallText = new PIXI.Text(tower.health, textStyle); 
-            wallText.anchor.x = 0.5; 
+            });
+            let wallText = new PIXI.Text(tower.health, textStyle);
+            wallText.anchor.x = 0.5;
             wallText.anchor.y = 0.5;
             wallText.x = this.wallTextConstant[(tower.position.zone - 1) * 2];
             wallText.y = this.wallTextConstant[(tower.position.zone - 1) * 2 + 1];
-            this.wallContainer.addChild(graphics); 
-            this.wallContainer.addChild(wallText); 
+            this.wallContainer.addChild(graphics);
+            this.wallContainer.addChild(wallText);
         }
 
-        this.stage.addChild(this.monsterContainer); 
+        this.stage.addChild(this.monsterContainer);
         this.stage.addChild(this.wallContainer);
 
         this.renderer.render(this.stage);
     }
 
     private onTouchstart(param, e) {
-        console.log(param, e); 
+        if (!_.isEqual(param.ref.selectedCard, -1)) {
+            if (_.isEqual(param.ref.currentTurn(), param.ref.nickname)) {
+                param.ref.gameService.playCard(param.ref.nickname, param.ref.lobbyid,
+                    param.monster.index, param.ref.selectedCard).subscribe((result) => {
+                        
+                    if (result.success) {
+                        param.ref.hand.reset();
+                    } else {
+                        const alert = Alert.create(AlertType.DANGER, '<b>You cannot play that card there</b>', 5000);
+                        param.ref.service.alert(alert);
+                    }
+                    });
+            } else {
+                const alert = Alert.create(AlertType.WARNING, '<b>Wait until your turn</b>', 5000);
+                param.ref.service.alert(alert);
+                param.ref.hand.reset();
+            }
+        }
     }
 
     private resize() {
@@ -185,7 +227,7 @@ export class GameComponent {
             w = parentWidth;
             h = parentWidth / this.ratio;
         }
-        
+
         this.renderer.view.style.width = w + 'px';
         this.renderer.view.style.height = h + 'px';
     }
@@ -197,10 +239,9 @@ export class GameComponent {
     private ngOnInit() {
 
         this.activatedRoute.params.subscribe((params: Params) => {
-            this.lobbyid = params.sessionid; 
-            this.nickname = params.nickname;
-            // TODO ben
-        }); 
+            this.lobbyid = _.get(params, 'sessionid', '');
+            this.nickname = _.get(params, 'nickname', '');
+        });
 
         this.gameService.checkSession(this.lobbyid)
             .subscribe((gameSession) => {
@@ -232,7 +273,7 @@ export class GameComponent {
     }
 
     private ngAfterViewInit() {
-        this.div.nativeElement.appendChild(this.renderer.view); 
+        this.div.nativeElement.appendChild(this.renderer.view);
     }
 
      /**
@@ -255,5 +296,14 @@ export class GameComponent {
      */
     private cardIndex(index: number) {
         this.selectedCard = index;
+    }
+
+    private openModal(htmlTemplate: TemplateRef<any>) {
+        this.modalRef = this.modalService.show(htmlTemplate);
+    }
+
+    private backToMenu() {
+        this.router.navigate(['/']);
+        this.modalRef.hide();
     }
 }

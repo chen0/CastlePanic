@@ -1,11 +1,29 @@
 <div class="container-fluid">
+    <div class="my-alert-center-style">
+        <nac-alert-center [animation]="'decent'" [htmlTextEnabled]="true"></nac-alert-center>
+    </div>
     <div class="row brown-background">
         <div class="col-sm-10 custom-col game-col">
             <div #div class='game-canvas'></div>
         </div>
         <div class="col-sm-2 custom-col">
-                <hand [nickname]='nickname' [players]='playerArray' [turnNum]='turnNum' [lobbyid]='lobbyid' (cardIndexChanged)="cardIndex($event)"></hand>
+            <hand [nickname]='nickname' [players]='playerArray' [turnNum]='turnNum' [lobbyid]='lobbyid' (cardIndexChanged)="cardIndex($event)"></hand>
         </div>
     </div>
-</div>
 
+    <ng-template #gameOver>
+        <div class="modal-header">
+            <h4 class="modal-title pull-left">Game Over</h4>
+            <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p *ngIf="gameSession.state.loss"><b>You Lost</b>, The monsters destroyed all of your towers</p>
+            <p *ngIf="gameSession.state.win"><b>You Won!</b> You defeated all of the monsters</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" (click)="backToMenu()">Back to Menu</button>
+        </div>
+    </ng-template>
+</div>

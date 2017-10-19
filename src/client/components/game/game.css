@@ -17,3 +17,9 @@ canvas {
 .custom-col {
     padding: 0;
 }
+
+.my-alert-center-style {
+	position: fixed;
+	z-index: 1000000;
+	margin: 20px 20px 20px 20px;
+}

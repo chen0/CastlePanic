@@ -15,6 +15,7 @@ export class GameSessionService {
     public lobbyAPI = 'api/lobbyInfo'; 
     public startGameAPI = 'api/startGame'; 
     public checkSessionAPI = 'api/checkSession';
+    public playCardAPI = 'api/playCard';
     public endTurnAPI = 'api/endTurn';
     public handleErrorObservable: string;
     public nickName: string;
@@ -77,6 +78,13 @@ export class GameSessionService {
             .catch((error: any) => Observable.throw(error.json().error || 'Error'));
     }
 
+    public playCard(name: string, gameCode: string, monsterIndex: number, cardIndex: number): Observable<any> {
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({headers: headers}); 
+        return this.http.post(this.playCardAPI, JSON.stringify({name, gameCode, monsterIndex, cardIndex}), options)
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json().error || 'Error'));
+    }
     public endTurn(gameCode: string, name: string): Observable<any> {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({headers: headers}); 

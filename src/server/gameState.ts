@@ -201,7 +201,14 @@ export class GameState {
             } else {
                 let drawnMonster: Monster = this.monsters[this.monsterIndex];
                 this.monsterIndex++;
-                let p = new Position(Ring.FOREST, randZone[i] );
+                
+                // makes sure you cannot draw two monsters to the same position
+                let j = 0;
+                let p = new Position(Ring.FOREST, randZone[i + j] );
+                while ( _.find(this.monsters, (m: Monster) => m.getPosition().isEqual(p) ) ) {
+                    j++;
+                    p = new Position(Ring.FOREST, randZone[i + j] );
+                }
                 drawnMonster.setPosition(p);
             }
 
@@ -256,20 +263,15 @@ export class GameState {
     public endTurn(userName: string): boolean {
         if (this.hasStarted() && _.isEqual(this.currentTurn().showPlayerID(), userName)) {
             this.moveAllMonsters();
-            this.loss = true;
-            for (let i = 0; i++; i < this.towers.length) {
-                if (this.towers[i].isStanding()) {
-                    this.loss = false;
-                }
-            }
-            if (this.loss === true) {
-                // make class/function call to loss.
+
+            let standingTowers = _.filter(this.towers, (t: Tower) => t.isStanding());
+            if ( _.isEqual( standingTowers.length, 0) ) {
+                this.loss = true;
+            } else {
+                this.loss = false;
             }
 
             this.drawnMonsters();
-            if (this.win === true) {
-                // make class/function call to win.
-            }
 
             this.nextTurn();
             return true;

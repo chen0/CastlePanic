@@ -42,7 +42,7 @@ export class HandComponent {
         let player = _.find(playerArray, (p: any) => _.isEqual( _.get(p, 'userid', ''), this.nickname));
         if (player) {
             this.cards = _.get(player, 'cards', []);
-            this.playerID = _.findIndex(playerArray, {'userid': this.nickname}); 
+            this.playerID = _.findIndex(playerArray, {userid: this.nickname}); 
         }
 
     }
@@ -65,7 +65,7 @@ export class HandComponent {
             .subscribe(() => {
                 try {
                 this.endTurn();
-            } catch (Error) { }
+            } catch (Error) { /* empty */ }
             });
     }
 
