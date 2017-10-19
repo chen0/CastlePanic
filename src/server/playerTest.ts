@@ -1,6 +1,17 @@
 import * as _ from 'lodash';
 import {GameState} from './gameState';
 import {Player} from './player'; 
+import { BlueArcher } from 'deck/bluearcher';
+import { BlueKnight } from 'deck/blueknight';
+import { BlueSwordsman } from 'deck/blueswordsman';
+import { Card } from 'deck/card';
+import { CardToolkit } from 'deck/cardtoolkit';
+import { GreenArcher } from 'deck/greenarcher';
+import { GreenKnight } from 'deck/greenknight';
+import { GreenSwordsman } from 'deck/greenswordsman';
+import { RedArcher } from 'deck/redarcher';
+import { RedKnight } from 'deck/redknight';
+import { RedSwordsman } from 'deck/redswordsman';
 
 export namespace PlayerTests {
 
@@ -71,5 +82,18 @@ export namespace PlayerTests {
 
         return ply1 instanceof Player;
     }
+	
+/*	This should work, but we need to return a Card[] or a Card in addCard to test it. We can then switch it back once testing is done.
+	function addCardTest(): void {
+	    let state = new GameState();
+        state.getCards().push(new GreenSwordsman());
+        let str = state.toString();
+        let newState = GameState.parse(str);
 
+        let card = newState.drawCard();
+		let Card: drawnCard = state.addCard(card);
+		
+		return drawnCard instanceof [GreenSwordsman];
+	}
+*/
 }
