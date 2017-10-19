@@ -42,8 +42,8 @@ export class LobbyComponent {
 
     private ngOnInit() {
         this.activatedRoute.params.subscribe((params: Params) => {
-            this.lobbyid = params['sessionid']; 
-            this.nickname = params['nickname']; 
+            this.lobbyid = params.sessionid; 
+            this.nickname = params.nickname; 
         }); 
 
         this.timer
