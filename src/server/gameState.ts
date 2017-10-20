@@ -223,6 +223,16 @@ export class GameState {
     }
 
     /**
+     * Checks if game is over
+     * 
+     * @returns {boolean} - true if game is over, false if game is not over
+     * @memberof GameState
+     */
+    public isGameOver(): boolean {
+        return this.loss || this.win;
+    }
+
+    /**
      * Moves all the monsters that are on the board forward or clockwise.
      * 
      * @memberof GameState

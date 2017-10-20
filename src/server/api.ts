@@ -39,12 +39,12 @@ export class Api {
             let gameCode = gameSession.getCode();
 
             // if name is provided add User as owner of game session
-            if ( !_.isEqual(name, '') ) {
+            if (!_.isEqual(name, '')) {
                 GameSession.addUser(name, 'owner', gameCode, (success: boolean) => {
-                    response.json( {gameCode} );
+                    response.json({ gameCode });
                 });
             } else {
-                response.json( {gameCode} );
+                response.json({ gameCode });
             }
         });
     }
@@ -67,7 +67,7 @@ export class Api {
 
     private checkGameCode(request: express.Request, response: express.Response): void {
         let name = _.get(request, 'body.gameCode', '');
-        
+
         if (!_.isEqual(name, '')) {
             GameSession.gameCodeExists(name, (success: boolean) => {
                 response.json({ success });
@@ -88,7 +88,7 @@ export class Api {
     private joinGame(request: express.Request, response: express.Response): void {
         let name = _.get(request, 'body.name', '');
         let gameCode = _.get(request, 'body.gameCode', '');
-        
+
         if (!_.isEqual(name, '') && !_.isEqual(gameCode, '')) {
             GameSession.addUser(name, 'player', gameCode, (success: boolean) => {
                 response.json({ success });
@@ -108,8 +108,8 @@ export class Api {
      * and the role of the player requesting the lobby
      */
     private lobby(request: express.Request, response: express.Response): void {
-        let name = _.get( request, 'body.name', '');
-        let gameCode = _.get( request, 'body.gameCode', '');
+        let name = _.get(request, 'body.name', '');
+        let gameCode = _.get(request, 'body.gameCode', '');
 
         if (!_.isEqual(name, '') && (!_.isEqual(gameCode, ''))) {
             GameSession.getLobby(gameCode, name, (names: string[], role: string[]) => {
@@ -128,7 +128,7 @@ export class Api {
     }
 
     private checkSession(request: express.Request, response: express.Response): void {
-        let gameCode = _.get( request, 'body.gameCode', '');
+        let gameCode = _.get(request, 'body.gameCode', '');
 
         if (!_.isEqual(gameCode, '')) {
             GameSession.getSession(gameCode, (session: GameSession) => {
@@ -152,12 +152,12 @@ export class Api {
         let name = _.get(request, 'body.name', '');
         let gameCode = _.get(request, 'body.gameCode', '');
 
-        if ( !_.isEqual(name, '') && !_.isEqual(gameCode, '') ) {
-            GameSession.startGame( gameCode, name, (success: boolean) => {
-                response.json({success});
+        if (!_.isEqual(name, '') && !_.isEqual(gameCode, '')) {
+            GameSession.startGame(gameCode, name, (success: boolean) => {
+                response.json({ success });
             });
         } else {
-            response.json({ success: false, error: 'Error: Missing parameter(s)'});
+            response.json({ success: false, error: 'Error: Missing parameter(s)' });
         }
     }
 
@@ -169,31 +169,37 @@ export class Api {
      */
     private endTurn(request: express.Request, response: express.Response): void {
         let name = _.get(request, 'body.name', '');
-        let gameCode = _.get( request, 'body.gameCode', '');
+        let gameCode = _.get(request, 'body.gameCode', '');
 
-        if ( !_.isEqual(name, '') && !_.isEqual(gameCode, '') ) {
-            GameSession.getSession( gameCode, (session: GameSession) => {
+        if (!_.isEqual(name, '') && !_.isEqual(gameCode, '')) {
+            GameSession.getSession(gameCode, (session: GameSession) => {
 
-                if ( !_.isEqual(session, null) ) {
+                if (!_.isEqual(session, null) && !session.isSessionOver()) {
 
                     let state = session.getState();
 
                     let success = state.endTurn(name);
-                    if ( success ) {
-                        session.save( () => {
-                            response.json({success});
+                    if (success) {
+                        session.save(() => {
+                            response.json({ success });
                         });
                     } else {
-                        response.json({success, error: 'Error: could not end turn'});
+                        response.json({ success, error: 'Error: could not end turn' });
                     }
 
                 } else {
+                    let data: any = {success: false};
+                    if ( session.isSessionOver() ) {
+                        data.error  = 'Error: Game is over';
+                    } else {
+                        data.error = 'Error: name or gameCode is invalid';
+                    }
                     // session did not exist
-                    response.json({success: false, error: 'Error: name or gameCode is invalid'});
+                    response.json(data);
                 }
             });
         } else {
-            response.json({ success: false, error: 'Error: Missing parameter(s)'});
+            response.json({ success: false, error: 'Error: Missing parameter(s)' });
         }
     }
 
@@ -207,13 +213,17 @@ export class Api {
         let name = _.get(request, 'body.name', '');
         let cardIndex = _.get(request, 'body.cardIndex', -1);
         let monsterIndex = _.get(request, 'body.monsterIndex', -1);
-        
-        if (!_.isEqual(name, '') && !_.isEqual(gameCode, '') && 
+
+        if (!_.isEqual(name, '') && !_.isEqual(gameCode, '') &&
             !_.isEqual(cardIndex, -1) && !_.isEqual(monsterIndex, -1)) {
             GameSession.getSession(gameCode, (session: GameSession) => {
-                session.playCard(gameCode, name, cardIndex, monsterIndex, (success: boolean) => {
-                    response.json({ success });
-                });
+                if (!session.isSessionOver()) {
+                    session.playCard(gameCode, name, cardIndex, monsterIndex, (success: boolean) => {
+                        response.json({ success });
+                    });
+                } else {
+                    response.json({success: false, error: 'Error: Game is over'});
+                }
             });
         } else {
             let data = {

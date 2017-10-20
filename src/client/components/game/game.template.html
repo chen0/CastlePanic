@@ -7,7 +7,7 @@
             <div #div class='game-canvas'></div>
         </div>
         <div class="col-sm-2 custom-col">
-            <hand [nickname]='nickname' [players]='playerArray' [turnNum]='turnNum' [lobbyid]='lobbyid' (cardIndexChanged)="cardIndex($event)"></hand>
+            <hand [nickname]='nickname' [players]='playerArray' [turnNum]='turnNum' [lobbyid]='lobbyid' [win]='win' [loss]='loss' (cardIndexChanged)="cardIndex($event)"></hand>
         </div>
     </div>
 

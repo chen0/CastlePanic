@@ -267,6 +267,16 @@ export class GameSession {
     }
 
     /**
+     * Checks if session is over
+     * 
+     * @returns {boolean} - true if session is over, false if it is not
+     * @memberof GameSession
+     */
+    public isSessionOver(): boolean {
+        return this.state.isGameOver();
+    }
+
+    /**
      * check if the cardIndex and monsterIndex is correct
      * hit the monster and remove the played car from the players hand
      * 
