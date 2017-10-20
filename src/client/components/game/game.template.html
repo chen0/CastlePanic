@@ -7,7 +7,7 @@
             <div #div class='game-canvas'></div>
         </div>
         <div class="col-sm-2 custom-col">
-            <hand [nickname]='nickname' [players]='playerArray' [turnNum]='turnNum' [lobbyid]='lobbyid' (cardIndexChanged)="cardIndex($event)"></hand>
+            <hand [nickname]='nickname' [players]='playerArray' [turnNum]='turnNum' [lobbyid]='lobbyid' [win]='win' [loss]='loss' (cardIndexChanged)="cardIndex($event)"></hand>
         </div>
     </div>
 
@@ -20,7 +20,7 @@
         </div>
         <div class="modal-body">
             <p *ngIf="gameSession.state.loss"><b>You Lost</b>, The monsters destroyed all of your towers</p>
-            <p *ngIf="gameSession.state.win"><b>You Won!</b> You defeated all of the monsters</p>
+            <p *ngIf="gameSession.state.win && !gameSession.state.loss"><b>You Won!</b> You defeated all of the monsters</p>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" (click)="backToMenu()">Back to Menu</button>

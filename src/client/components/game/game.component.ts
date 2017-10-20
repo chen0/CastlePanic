@@ -49,6 +49,8 @@ export class GameComponent {
     private wallTextConstant: number[] = [578, 465, 617, 536, 579, 610, 499, 610, 462, 536, 499, 465];
     private playerArray: any;
     private turnNum: number; 
+    private win: boolean;
+    private loss: boolean;
 
     @ViewChild('div') private div: ElementRef;
     // reference to child component
@@ -105,6 +107,8 @@ export class GameComponent {
                 this.gameSession = gameSession;
                 this.playerArray = _.get(gameSession, 'state.players', []);
                 this.turnNum = this.gameSession.state.turnNum;
+                this.win = gameSession.state.win;
+                this.loss = gameSession.state.loss;
         });
         try {
             this.monsterContainer.destroy();
@@ -203,7 +207,11 @@ export class GameComponent {
                     if (result.success) {
                         param.ref.hand.reset();
                     } else {
-                        const alert = Alert.create(AlertType.DANGER, '<b>You cannot play that card there</b>', 5000);
+                        let message = 'You cannot play that card there';
+                        if ( _.isEqual(result.error, 'Error: Game is over') ) {
+                            message = 'Game is over';
+                        }
+                        const alert = Alert.create(AlertType.DANGER, `<b>${message}</b>`, 5000);
                         param.ref.service.alert(alert);
                     }
                     });

@@ -37,6 +37,8 @@ export class HandComponent {
     @Input() private nickname: string;
     @Input() private playerArray: any[];
     @Input() private lobbyid: string;
+    @Input() private win: boolean;
+    @Input() private loss: boolean;
     @Input() set players(playerArray: any[]) {
         this.playerArray = playerArray;
         let player = _.find(playerArray, (p: any) => _.isEqual( _.get(p, 'userid', ''), this.nickname));
