@@ -114,6 +114,20 @@ export class GameSession {
         });
     }
 
+    public static lobbyFull(gameCode: string, callback: (full: boolean) => void) {
+        let queryStr = `SELECT * FROM Users WHERE game_code='${gameCode}';`;
+        let db = new DBConnector();
+        
+        db.query(queryStr, (err: any, rows: any, fields: any) => {
+            db.close();
+
+            if ( _.get(rows, 'length', 0) < 6) {
+                callback(false);
+            } else {
+                callback(true);
+            }
+        });
+    }
     /**
      * Starts the game if the user created the game. Adds all the users in the lobby as players
      * and initializes the game.
