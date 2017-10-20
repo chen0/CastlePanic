@@ -90,8 +90,17 @@ export class Api {
         let gameCode = _.get(request, 'body.gameCode', '');
         
         if (!_.isEqual(name, '') && !_.isEqual(gameCode, '')) {
-            GameSession.addUser(name, 'player', gameCode, (success: boolean) => {
-                response.json({ success });
+            GameSession.lobbyFull(gameCode, (isFull: boolean) => {
+                if(!isFull) {
+                    GameSession.addUser(name, 'player', gameCode, (success: boolean) => {
+                        response.json({ success });
+                    });
+                } else {
+                    let data = {
+                        error: 'Error: Lobby is full'
+                    };
+                    response.json(data);
+                }
             });
         } else {
             let data = {
