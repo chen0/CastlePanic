@@ -152,8 +152,9 @@ export class GameState {
      * @param {string[]} names - names of players to include in the game
      * @memberof GameState
      */
-    public initializeGame(names: string[]) {
+    public initializeGame(names: string[], owner: string) {
         if (!this.started) {
+            this.owner = name;
             this.started = true;
             this.monsters = MonsterToolkit.getMonsters();
             this.cards = CardToolkit.getCards();

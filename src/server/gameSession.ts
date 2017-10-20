@@ -142,7 +142,7 @@ export class GameSession {
                             
                             let state = session.getState();
 
-                            state.initializeGame(names);
+                            state.initializeGame(names, name);
 
                             session.save( () => callback(true) );
                         } else {
