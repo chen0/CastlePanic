@@ -154,7 +154,7 @@ export class GameState {
      */
     public initializeGame(names: string[], owner: string) {
         if (!this.started) {
-            this.owner = name;
+            this.owner = owner;
             this.started = true;
             this.monsters = MonsterToolkit.getMonsters();
             this.cards = CardToolkit.getCards();
@@ -261,6 +261,8 @@ export class GameState {
         for (let i = 0; i < numCards; i++) {
             player.addCard(this.drawCard());
         }
+
+        player.resetTurn();
     }
 
     /**
@@ -286,6 +288,29 @@ export class GameState {
 
             this.nextTurn();
             return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Discards a card from a players hand and draws a new one
+     * 
+     * @param {string} playerName - name of player that wants to discard
+     * @param {number} cardIndex - index of card to discard 
+     * @returns {boolean} - True if card was discarded, false if card could not be discarded
+     * @memberof GameState
+     */
+    public discard(playerName: string, cardIndex: number ): boolean {
+        let player: Player = this.currentTurn();
+        if ( _.isEqual( player.showPlayerID(), playerName ) && !this.isGameOver()) {
+            let result: boolean = player.discard( cardIndex );
+            if ( result ) {
+                player.addCard( this.drawCard() );
+                return true;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
