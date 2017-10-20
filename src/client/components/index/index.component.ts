@@ -91,9 +91,15 @@ export class IndexComponent implements OnInit {
                                     } else {
                                         this.gameService.joinGame(sessionID, name)
                                             .subscribe(
-                                                () => {
-                                                    this.modalRef.hide();
-                                                    this.router.navigate(['/lobby', sessionID, name]);
+                                                (success) => {
+                                                    if (success.isFull) {
+                                                        const alert = Alert.create
+                                                        (AlertType.DANGER, '<b>HMMM, </b>This game session is full.', 5000);
+                                                        this.service.alert(alert);
+                                                    } else {
+                                                        this.modalRef.hide();
+                                                        this.router.navigate(['/lobby', sessionID, name]);
+                                                    }
                                                 }); 
                                     }
                             });
