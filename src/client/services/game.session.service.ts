@@ -46,7 +46,7 @@ export class GameSessionService {
             .catch((error: any) => Observable.throw(error.json().error || 'Error'));
     }
 
-    public joinGame(gameCode: string, name: string): Observable<void> {
+    public joinGame(gameCode: string, name: string): Observable<any> {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({headers: headers}); 
         return this.http.post(this.joinGameAPI, JSON.stringify({name, gameCode}), options)

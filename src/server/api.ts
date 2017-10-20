@@ -96,10 +96,7 @@ export class Api {
                         response.json({ success });
                     });
                 } else {
-                    let data = {
-                        error: 'Error: Lobby is full'
-                    };
-                    response.json(data);
+                    response.json({isFull});
                 }
             });
         } else {
