@@ -170,7 +170,8 @@ export class GameState {
             });
 
             // randomly place first set of monsters
-            this.drawnMonsters();
+            this.drawMonsters();
+            this.moveAllMonsters();
 
         }
     }
@@ -184,34 +185,40 @@ export class GameState {
         return drawnCard;
     }
 
-    public drawnMonsters(): void {
+    /**
+     * Checks if the game has been won
+     * 
+     * @returns {boolean} - true if game was won, false if not
+     * @memberof GameState
+     */
+    public checkGameWon(): boolean {
+        let monsters = _.filter(this.monsters, (m: Monster) => !m.isDead() );
+        if ( _.isEqual(monsters.length, 0) ) {
+            this.win = true;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public drawMonsters(): void {
+        if ( this.checkGameWon() ) {
+            return;
+        }
+
         let randZone = _.shuffle([1, 2, 3, 4, 5, 6]);
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < 2 && this.monsterIndex < this.monsters.length; i++ ) {
+            let monster: Monster = this.monsters[this.monsterIndex];
+            this.monsterIndex++;
 
-            if ( this.monsterIndex >= this.monsters.length ) {
-                // Figure out a way to end the game here.
-
-                this.win = true;
-                _.forEach(this.monsters, (monster: Monster) => {
-                    if (!monster.isDead()) {
-                        this.win = false;
-                        return false;
-                    }
-                });
-            } else {
-                let drawnMonster: Monster = this.monsters[this.monsterIndex];
-                this.monsterIndex++;
-                
-                // makes sure you cannot draw two monsters to the same position
-                let j = 0;
-                let p = new Position(Ring.FOREST, randZone[i + j] );
-                while ( _.find(this.monsters, (m: Monster) => m.getPosition().isEqual(p) ) ) {
-                    j++;
-                    p = new Position(Ring.FOREST, randZone[i + j] );
-                }
-                drawnMonster.setPosition(p);
+            // makes sure you cannot draw two monsters to the same position
+            let j = 0;
+            let p = new Position(Ring.FOREST, randZone[i + j] );
+            while ( _.find(this.monsters, (m: Monster) => m.getPosition().isEqual(p) ) ) {
+                j++;
+                p = new Position(Ring.FOREST, randZone[i + j] );
             }
-
+            monster.setPosition(p);
         }
     }
 
@@ -226,14 +233,7 @@ export class GameState {
         _.forEach(this.monsters, (monster) => {
             // move monster forward
             let killed: boolean = monster.moveForward(this.towers, this.monsters);
-
-            if (!killed) {
-                remainingMonsters.push(monster);
-            }
         });
-
-        // update monsters
-        this.monsters = remainingMonsters;
     }
 
     /**
@@ -271,7 +271,7 @@ export class GameState {
                 this.loss = false;
             }
 
-            this.drawnMonsters();
+            this.drawMonsters();
 
             this.nextTurn();
             return true;

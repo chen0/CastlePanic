@@ -17,17 +17,17 @@ export namespace MonsterToolkit {
         let monsters: Monster[] = [];
 
         // create all the goblins
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 8; i++) {
             monsters.push(new Goblin());
         }
 
         // create all the Orcs
-        for (let i = 0; i < 11; i++) {
+        for (let i = 0; i < 6; i++) {
             monsters.push(new Orc());
         }
 
         // create all the Trolls
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 5; i++) {
             monsters.push(new Troll());
         }
 

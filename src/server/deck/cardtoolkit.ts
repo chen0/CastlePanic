@@ -13,7 +13,7 @@ import { RedSwordsman } from './redswordsman';
 export namespace CardToolkit {
 
     /** Taken directly from the other toolkit shamelessly
-     * Instantiates an Array of cards and shuffles them. Currently only contains 54 cards and does not
+     * Instantiates an Array of cards and shuffles them. Currently only contains 34 cards and does not
      * contain any special tokens yet
      * 
      * @export
@@ -24,45 +24,45 @@ export namespace CardToolkit {
         // let drawnCards: Card[] = [];
 
         // create all the GreenSwordsman
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 3; i++) {
             cards.push(new GreenSwordsman());
         }
 
         // create all the RedSwordsman
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 3; i++) {
             cards.push(new RedSwordsman());
         }
 
         // create all the BlueSwordsman
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 3; i++) {
             cards.push(new BlueSwordsman());
         }
 
         // create all the GreenArcher
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 3; i++) {
             cards.push(new GreenArcher());
         }
 
         // create all the BlueArcher
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 3; i++) {
             cards.push(new BlueArcher());
         }
 
         // create all the RedArcher
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 3; i++) {
             cards.push(new RedArcher());
         }
         // create all the BlueKnight
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 3; i++) {
             cards.push(new BlueKnight());
         }
 
         // create all the GreenKnight
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 3; i++) {
             cards.push(new GreenKnight());
         }
         // create all the RedKnight
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 3; i++) {
             cards.push(new RedKnight());
         }
 

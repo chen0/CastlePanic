@@ -258,6 +258,7 @@ export class GameSession {
     public playCard(gameCode: string, name: string, cardIndex: number, monsterIndex: number, 
                     callback: (success: boolean) => void ) {
         let success = this.playAndHit(gameCode, name, cardIndex, monsterIndex);
+        this.state.checkGameWon();
         if ( _.isEqual(success, true )) {
             this.save( () => callback(true) );
         } else {
@@ -286,8 +287,9 @@ export class GameSession {
             }
             let result: boolean = false;
             let allMonsters = state.getMonsters();
-            if ( monsterIndex < 0 || monsterIndex > allMonsters.length || allMonsters[monsterIndex].isDead() || 
-                 _.isEqual(allMonsters[monsterIndex].position.getRing(), Ring.OFF_BOARD)) {
+            if ( monsterIndex < 0 || monsterIndex > allMonsters.length || allMonsters[monsterIndex].isDead()
+                  ||  _.isEqual(allMonsters[monsterIndex].position.getRing(), Ring.OFF_BOARD) || cardIndex < 0
+                  || cardIndex >= thisPlayer.showCards().length) {
                 result = false;
             } else {
                 let cards: Card[] = thisPlayer.showCards();
