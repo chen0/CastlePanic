@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Inject, Input, OnDestroy, OnInit , Output } from '@angular/core';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import * as _ from 'lodash';
+import { Alert, AlertCenterComponent, AlertCenterService, AlertType } from 'ng2-alert-center';
 import css from './hand.css';
 import template from './hand.template.html';
 
@@ -29,6 +30,7 @@ export class HandComponent {
     private alive: boolean; 
     private timer: Observable<number>; 
     private interval: number; 
+    private timesDiscarded: number;
 
     // card that has been selected
     private selectedCardIndex: number;
@@ -45,12 +47,14 @@ export class HandComponent {
         if (player) {
             this.cards = _.get(player, 'cards', []);
             this.playerID = _.findIndex(playerArray, {userid: this.nickname}); 
+            this.timesDiscarded = _.get(player, 'timesDiscarded');
         }
 
     }
     @Input() private turnNum: number;
 
-    constructor( @Inject(GameSessionService) private gameService: GameSessionService ) {
+    constructor( @Inject(GameSessionService) private gameService: GameSessionService,
+                 @Inject(AlertCenterService) private service: AlertCenterService, ) {
         this.selectedCardIndex = -1;
         this.alive = true; 
         this.interval = 1000; 
@@ -61,28 +65,14 @@ export class HandComponent {
         this.alive = false;
     }
 
-    public ngOnInit() {
-        this.timer
-            .takeWhile(() => this.alive)
-            .subscribe(() => {
-                try {
-                this.endTurn();
-            } catch (Error) { /* empty */ }
-            });
-    }
-
-    public endTurn() {
-        if (this.turnNum % (_.size(this.playerArray)) === this.playerID) {
-            document.getElementById('endTurnB').style.display = 'block';
-        } else {
-            document.getElementById('endTurnB').style.display = 'none';
-        }
+    public isMyTurn(): boolean {
+        return _.isEqual(this.turnNum % (_.size(this.playerArray) ), this.playerID);
     }
 
     public sendEndTurn() {
         this.gameService.endTurn(this.lobbyid, this.nickname)
             .subscribe((success) => {
-                document.getElementById('endTurnB').style.display = 'none';
+                // empty
             });
     }
 
@@ -118,6 +108,27 @@ export class HandComponent {
         if ( !_.isEqual(this.selectedCardIndex, index) ) {
             this.selectedCardIndex = index;
             this.cardIndexChanged.emit( this.selectedCardIndex );
+        }
+    }
+
+    private discard() {
+        if ( _.isEqual(this.selectedCardIndex, -1) ) {
+            const alert = Alert.create(AlertType.DANGER, `<b>Please select a card first</b>`, 5000);
+            this.service.alert(alert);
+        } else {
+            this.gameService.discard(this.lobbyid, this.nickname, this.selectedCardIndex)
+                .subscribe((response) => {
+                    if (response.success) {
+                        this.reset();
+                        let url = this.getImageUrl(response.newCard.type);
+                        const alert = Alert.create(AlertType.INFO,
+                            `<b>New Card</b><img src='${url}' width="75" height="75">`, 5000);
+                        this.service.alert(alert);
+                    } else {
+                        const alert = Alert.create(AlertType.DANGER, `<b>Error you cannot discard</b>`, 5000);
+                        this.service.alert(alert);
+                    }
+                });
         }
     }
 }

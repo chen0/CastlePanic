@@ -249,13 +249,13 @@ export class Api {
             GameSession.getSession(gameCode, (session: GameSession) => {
                 if ( !_.isEqual(session, null) ) {
                     let state = session.getState();
-                    let success = state.discard(name, cardIndex);
-                    let data: any = {success};
+                    let newCard = state.discard(name, cardIndex);
                     session.save( () => {
-                        if (!success) {
-                            data.error = 'Error: could not discard';
+                        if ( !_.isEqual(newCard, null) ) {
+                            response.json({success: true, newCard});
+                        } else {
+                            response.json({success: false, error: 'Error: could not discard'});
                         }
-                        response.json(data);
                     });
                 }
             });

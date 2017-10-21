@@ -298,21 +298,22 @@ export class GameState {
      * 
      * @param {string} playerName - name of player that wants to discard
      * @param {number} cardIndex - index of card to discard 
-     * @returns {boolean} - True if card was discarded, false if card could not be discarded
+     * @returns {Card} - the card that was added to the players hand or null
      * @memberof GameState
      */
-    public discard(playerName: string, cardIndex: number ): boolean {
+    public discard(playerName: string, cardIndex: number ): Card {
         let player: Player = this.currentTurn();
         if ( _.isEqual( player.showPlayerID(), playerName ) && !this.isGameOver()) {
             let result: boolean = player.discard( cardIndex );
             if ( result ) {
-                player.addCard( this.drawCard() );
-                return true;
+                let card = this.drawCard();
+                player.addCard( card );
+                return card;
             } else {
-                return false;
+                return null;
             }
         } else {
-            return false;
+            return null;
         }
     }
 

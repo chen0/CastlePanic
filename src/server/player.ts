@@ -84,8 +84,7 @@ export class Player {
      */
     public discard(cardIndex: number): boolean {
         if ( cardIndex < 5 && cardIndex >= 0 && this.timesDiscarded < Player.MAX_DISCARD) {
-            this.cards = _.filter(this.cards, (card: Card, index: number) => !_.isEqual(cardIndex,index) );
-            console.log(this.cards);
+            this.cards = _.filter(this.cards, (card: Card, index: number) => !_.isEqual(cardIndex, index) );
             this.timesDiscarded++;
             return true;
         } else {

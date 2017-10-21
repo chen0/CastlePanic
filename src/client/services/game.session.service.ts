@@ -17,6 +17,7 @@ export class GameSessionService {
     public checkSessionAPI = 'api/checkSession';
     public playCardAPI = 'api/playCard';
     public endTurnAPI = 'api/endTurn';
+    public discardAPI = 'api/discard';
     public handleErrorObservable: string;
     public nickName: string;
     public sessionID: string; 
@@ -89,6 +90,14 @@ export class GameSessionService {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({headers: headers}); 
         return this.http.post(this.endTurnAPI, JSON.stringify({gameCode, name}), options)
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json().error || 'Error'));
+    }
+
+    public discard(gameCode: string, name: string, cardIndex: number): Observable<any> {
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({headers: headers});
+        return this.http.post(this.discardAPI, JSON.stringify({gameCode, name, cardIndex}), options)
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error.json().error || 'Error'));
     }

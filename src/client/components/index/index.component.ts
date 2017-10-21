@@ -93,8 +93,8 @@ export class IndexComponent implements OnInit {
                                             .subscribe(
                                                 (success) => {
                                                     if (success.isFull) {
-                                                        const alert = Alert.create
-                                                        (AlertType.DANGER, '<b>HMMM, </b>This game session is full.', 5000);
+                                                        const alert = Alert.create(AlertType.DANGER,
+                                                            '<b>HMMM, </b>This game session is full.', 5000);
                                                         this.service.alert(alert);
                                                     } else {
                                                         this.modalRef.hide();
