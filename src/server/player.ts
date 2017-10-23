@@ -5,6 +5,9 @@ import { Card } from './deck/card';
 @JsonObject
 export class Player {
 
+    // maximum number of cards a player can discard in a turn
+    public static readonly MAX_DISCARD: number = 2;
+
     @JsonProperty('userid', String)
     public userid: string = '';
 
@@ -14,10 +17,14 @@ export class Player {
     @JsonProperty('numCards', Number)
     private numCards: number = 0;
 
+    @JsonProperty('timesDiscarded', Number)
+    private timesDiscarded: number = 0;
+
     constructor(userid: string) {
         this.userid = userid; 
         this.cards = new Array();
         this.numCards = 0;
+        this.timesDiscarded = 0;
     }
 
     /**
@@ -65,6 +72,33 @@ export class Player {
         
         this.numCards--;
         return played; 
+    }
+
+    /**
+     * Discards the card at cardIndex from the players hand, allows the player to discard
+     * up to MAX_DISCARD times
+     * 
+     * @param {number} cardIndex - index of card to discard
+     * @returns {boolean} 
+     * @memberof Player
+     */
+    public discard(cardIndex: number): boolean {
+        if ( cardIndex < 5 && cardIndex >= 0 && this.timesDiscarded < Player.MAX_DISCARD) {
+            this.cards = _.filter(this.cards, (card: Card, index: number) => !_.isEqual(cardIndex, index) );
+            this.timesDiscarded++;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Resets the player's turn, should be called at the begining
+     * 
+     * @memberof Player
+     */
+    public resetTurn(): void {
+        this.timesDiscarded = 0;
     }
 
     /**

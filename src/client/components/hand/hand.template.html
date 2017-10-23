@@ -4,7 +4,12 @@
             <img src="{{ getImageUrl(card.type) }}">
         </div>
     </div>
-    <div class='row' id='endTurnB'>
-		<button type="button" class="btn btn-danger" (click)="sendEndTurn()" *ngIf="!(win || loss)" >End Turn</button>
+    <div class='row button-list' *ngIf="!(win || loss) && isMyTurn()">
+        <div class='col-md-6'>
+            <button type="button" class="btn btn-danger" (click)="sendEndTurn()">End Turn</button>
+        </div>
+        <div class='col-md-6'>
+            <button type="button" class="btn btn-primary" (click)="discard()" *ngIf="timesDiscarded < 2">Discard</button>
+        </div>
     </div>
 </div>

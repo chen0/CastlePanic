@@ -17,6 +17,7 @@ export class Api {
         Server.getRouter().post('/api/endTurn', this.endTurn);
         Server.getRouter().post('/api/playCard', this.playCard);
         Server.getRouter().post('/api/checkSession', this.checkSession);
+        Server.getRouter().post('/api/discard', this.discard);
     }
 
     /**
@@ -91,12 +92,12 @@ export class Api {
 
         if (!_.isEqual(name, '') && !_.isEqual(gameCode, '')) {
             GameSession.lobbyFull(gameCode, (isFull: boolean) => {
-                if(!isFull) {
+                if (!isFull) {
                     GameSession.addUser(name, 'player', gameCode, (success: boolean) => {
                         response.json({ success });
                     });
                 } else {
-                    response.json({isFull});
+                    response.json({ isFull });
                 }
             });
         } else {
@@ -194,9 +195,9 @@ export class Api {
                     }
 
                 } else {
-                    let data: any = {success: false};
-                    if ( session.isSessionOver() ) {
-                        data.error  = 'Error: Game is over';
+                    let data: any = { success: false };
+                    if (session.isSessionOver()) {
+                        data.error = 'Error: Game is over';
                     } else {
                         data.error = 'Error: name or gameCode is invalid';
                     }
@@ -228,9 +229,37 @@ export class Api {
                         response.json({ success });
                     });
                 } else {
-                    response.json({success: false, error: 'Error: Game is over'});
+                    response.json({ success: false, error: 'Error: Game is over' });
                 }
             });
+        } else {
+            let data = {
+                error: 'Error: Missing parameter(s) in playCard request'
+            };
+            response.json(data);
+        }
+    }
+
+    private discard(request: express.Request, response: express.Response): void {
+        let gameCode = _.get(request, 'body.gameCode', '');
+        let name = _.get(request, 'body.name', '');
+        let cardIndex = _.get(request, 'body.cardIndex', -1);
+
+        if (!_.isEqual(name, '') && !_.isEqual(gameCode, '') && !_.isEqual(cardIndex, -1) ) {
+            GameSession.getSession(gameCode, (session: GameSession) => {
+                if ( !_.isEqual(session, null) ) {
+                    let state = session.getState();
+                    let newCard = state.discard(name, cardIndex);
+                    session.save( () => {
+                        if ( !_.isEqual(newCard, null) ) {
+                            response.json({success: true, newCard});
+                        } else {
+                            response.json({success: false, error: 'Error: could not discard'});
+                        }
+                    });
+                }
+            });
+            
         } else {
             let data = {
                 error: 'Error: Missing parameter(s) in playCard request'
