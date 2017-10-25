@@ -16,7 +16,7 @@ export class Tower {
      */
     public static createTowers(): Tower[] {
         let towers: Tower[] = [];
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 5; i++) {
             let p = new Position(Ring.CASTLE, i + 1);
             let t = new Tower(p, 2);
             towers.push( t );
