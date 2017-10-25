@@ -19,9 +19,6 @@ export class Tower {
         for (let i = 0; i < 5; i++) {
             let p = new Position(Ring.CASTLE, i + 1);
             let t = new Tower(p, 2);
-			if(i === 0){
-				health = 4;
-			}
             towers.push( t );
         }
         return towers;
