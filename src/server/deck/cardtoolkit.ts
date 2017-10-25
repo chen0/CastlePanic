@@ -66,8 +66,10 @@ export namespace CardToolkit {
             cards.push(new RedKnight());
         }
 
-        return _.shuffle(cards);
-    }
+       // return _.shuffle(cards);
+	   //bug: Deck isn't shuffled.
+		return cards;
+	}
 
     /**
      * Converts the Types of an Array of cards into their appropriate child types.
