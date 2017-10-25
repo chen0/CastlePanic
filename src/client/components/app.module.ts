@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { enableProdMode, NgModule } from '@angular/core';
 import { HttpModule, JsonpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
@@ -42,5 +42,8 @@ import { MainComponent } from './main/main.component';
     ]
 })
 export class MainModule { }
+
+// For production
+enableProdMode();
 
 platformBrowserDynamic().bootstrapModule(MainModule);

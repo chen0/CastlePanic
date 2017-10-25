@@ -44,6 +44,7 @@
     "fork-ts-checker-webpack-plugin": "^0.2.8",
     "html-loader": "^0.5.1",
     "html-webpack-plugin": "^2.30.1",
+    "pm2": "^2.7.2",
     "ts-loader": "^2.3.4",
     "tslint": "^5.7.0",
     "tslint-loader": "^3.5.3",
@@ -54,8 +55,10 @@
   "scripts": {
     "build": "webpack --config webpack/webpack.fresh.js",
     "build:client": "webpack --config webpack/webpack.client.js",
+    "build:prod": "webpack --config webpack/webpack.prod.js",
     "build:server": "webpack --config webpack/webpack.server.js",
     "build:test": "webpack --config webpack/webpack.test.js",
+    "server:restart": "pm2 restart server.bundle",
     "start": "node ./dist/server.bundle.js",
     "tslint": "tslint --fix -c ./tslint.json 'src/**/*{.ts,.tsx}'",
     "test": "node ./dist/test.bundle.js",

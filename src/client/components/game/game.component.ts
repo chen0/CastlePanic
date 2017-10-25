@@ -141,7 +141,7 @@ export class GameComponent {
                 graphics.drawCircle(50, 50, 50);
                 graphics.endFill();
                 graphics.interactive = true;
-                graphics.mousedown = this.onTouchstart.bind('param', { monster, ref: this });
+                graphics.pointerdown = this.onTouchstart.bind('param', { monster, ref: this });
                 let monsterNameAndHealth = _.get(monster, 'type', '') + '\nHP: ' + _.get(monster, 'health', 0);
                 let monsterText = new PIXI.Text(monsterNameAndHealth, textStyle);
                 monsterText.anchor.x = 0.5;
