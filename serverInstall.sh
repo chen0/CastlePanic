@@ -31,6 +31,7 @@ sudo apt-get update && sudo apt-get install yarn
 yarn install
 
 # Build Production Code
+cp src/server/database/prod.dbConfig.ts src/server/database/dbConfig.ts
 yarn build:prod
 
 # setup node to run on port 80
