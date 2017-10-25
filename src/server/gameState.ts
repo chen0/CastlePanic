@@ -279,9 +279,10 @@ export class GameState {
 
             let standingTowers = _.filter(this.towers, (t: Tower) => t.isStanding());
             if ( _.isEqual( standingTowers.length, 0) ) {
-                this.loss = true;
+       //         this.loss = true;
+	   //bug #1: Cannot lose game.
             } else {
-                this.loss = false;
+//part of bug 1                this.loss = false;
             }
 
             this.drawMonsters();
