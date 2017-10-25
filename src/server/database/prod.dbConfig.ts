@@ -3,13 +3,13 @@ import {DBConfig} from './database';
 
 // Configuration for mysql running in virtual box
 export let dbConfig: DBConfig = {
-    host: '10.10.4.15',
+    host: 'localhost',
     user: 'app',
-    password: 'apppassword',
+    password: 'applive',
     database: 'CastlePanicDB'
 };
 
 // Server configuration
 export let serverConfig: ServerConfig = {
-    port: 8000
+    port: 80
 };

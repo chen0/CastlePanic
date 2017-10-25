@@ -7,7 +7,7 @@ const path = require('path');
 const webpack = require('webpack');
 
 var cleanWebpack = new CleanWebpackPlugin(['dist'], {
-  root: path.resolve(__dirname),
+  root: path.resolve(__dirname,'..'),
   verbose: true,
   dry: false
 });
@@ -64,7 +64,7 @@ const loaderList = [
   }, 
 ]
 
-const server = {
+var server = {
   entry: {
     server: [path.resolve(__dirname,'../src/server/index.ts')]
   },
@@ -132,12 +132,11 @@ var client = {
     copyWebpack,
     forkTsChecker, 
     htmlWebpack,
-    contextReplacement/* ,
-    uglifyJs */
+    contextReplacement
   ]
 
 };
 
 var config = { server, client, test};
-var plugins = { cleanWebpack };
+var plugins = { cleanWebpack, uglifyJs };
 module.exports = { config, plugins };

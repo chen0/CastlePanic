@@ -1,6 +1,11 @@
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import * as path from 'path';
+import {serverConfig} from './database/dbConfig';
+
+export interface ServerConfig {
+    port: number;
+}
 
 /**
  * The Server object manages the express.js server. This server will serve all files in public/
@@ -9,7 +14,7 @@ import * as path from 'path';
  */
 class Server {
 
-    public static readonly port: number = 8000;
+    public static port;
 
     private express: express.Application;
     private router: express.Router;
@@ -17,6 +22,8 @@ class Server {
     private server: any;
 
     constructor() {
+        Server.port = serverConfig.port;
+        
         this.express = express();
         this.express.use(bodyParser.urlencoded({ extended: false }));
         this.express.use(bodyParser.json());

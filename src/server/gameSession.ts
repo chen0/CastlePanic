@@ -337,7 +337,7 @@ export class GameSession {
      */
     public getTimeStamp(): string {
         let str = `${this.created.getFullYear()}-${this.created.getMonth()}-${this.created.getDate()} 
-            ${this.created.getHours()}:${this.created.getMinutes()}:${this.created.getSeconds}`;
+            ${this.created.getHours()}:${this.created.getMinutes()}:${this.created.getSeconds()}`;
         return str;
     }
 }
