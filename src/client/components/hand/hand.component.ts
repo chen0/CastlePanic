@@ -120,7 +120,8 @@ export class HandComponent {
                 .subscribe((response) => {
                     if (response.success) {
                         this.reset();
-                        let url = this.getImageUrl(response.newCard.type);
+                        // let url = this.getImageUrl(response.newCard.type);
+                        let url = this.getImageUrl('GreenSwordsman');
                         const alert = Alert.create(AlertType.INFO,
                             `<b>New Card</b><img src='${url}' width="75" height="75">`, 5000);
                         this.service.alert(alert);

@@ -17,7 +17,8 @@ export namespace MonsterToolkit {
         let monsters: Monster[] = [];
 
         // create all the goblins
-        for (let i = 0; i < 8; i++) {
+        // added 1 more goblin
+        for (let i = 0; i < 9; i++) {
             monsters.push(new Goblin());
         }
 
