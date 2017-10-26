@@ -87,7 +87,8 @@ export class Position {
      */
     public nextPosition(): Position {
         if ( _.isEqual(this.ring, Ring.CASTLE) ) {
-            return this.clockwise();
+            // return this.clockwise();
+            return this;
         } else {
             return new Position( this.ring - 1, this.zone);
         }
