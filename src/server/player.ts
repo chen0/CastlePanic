@@ -58,7 +58,7 @@ export class Player {
         let cardsNotPlayed: Card[] = [];
         let played: boolean = false;
 
-        if ( cardIndex > 5 || cardIndex < 0) {
+        if ( cardIndex > 7 || cardIndex < 0) {
             return played;
         } else {
             for (let i = 0; i < this.cards.length; i++) {
@@ -83,7 +83,7 @@ export class Player {
      * @memberof Player
      */
     public discard(cardIndex: number): boolean {
-        if ( cardIndex < 5 && cardIndex >= 0 && this.timesDiscarded < Player.MAX_DISCARD) {
+        if ( cardIndex < 7 && cardIndex >= 0 && this.timesDiscarded < Player.MAX_DISCARD) {
             this.cards = _.filter(this.cards, (card: Card, index: number) => !_.isEqual(cardIndex, index) );
             this.timesDiscarded++;
             return true;
