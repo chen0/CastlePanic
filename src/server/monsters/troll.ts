@@ -6,6 +6,6 @@ import {Monster} from './monster';
 export class Troll extends Monster {
 
     constructor() {
-        super(3, 'Troll', new Position( Ring.OFF_BOARD, 1) );
+        super(2, 'Troll', new Position( Ring.OFF_BOARD, 1) );
     }
 }
