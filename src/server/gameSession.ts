@@ -36,7 +36,7 @@ export class GameSession {
             if ( exists ) {
                 callback(true);
             } else {
-                callback(false);
+                callback(true);
             }
         });
     }
