@@ -21,6 +21,7 @@ export class Tower {
             let t = new Tower(p, 2);
             towers.push( t );
         }
+        towers[ towers.length - 1].setHealth(5);
         return towers;
     }
 
@@ -38,6 +39,10 @@ export class Tower {
     constructor(position: Position, health: number) {
         this.health = health;
         this.position = position;
+    }
+
+    public setHealth(health: number) {
+        this.health = health;
     }
 
     /**

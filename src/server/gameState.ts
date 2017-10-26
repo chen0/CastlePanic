@@ -172,7 +172,9 @@ export class GameState {
 
             // randomly place first set of monsters
             this.drawMonsters();
-            this.moveAllMonsters();
+
+            // Seeded Bug #13 start all monsters in the forest
+            // this.moveAllMonsters();
 
         }
     }
