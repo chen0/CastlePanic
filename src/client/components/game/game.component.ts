@@ -200,7 +200,7 @@ export class GameComponent {
 
     private onTouchstart(param, e) {
         if (!_.isEqual(param.ref.selectedCard, -1)) {
-            if (_.isEqual(param.ref.currentTurn(), param.ref.nickname)) {
+            if (1) {
                 param.ref.gameService.playCard(param.ref.nickname, param.ref.lobbyid,
                     param.monster.index, param.ref.selectedCard).subscribe((result) => {
                         
@@ -215,11 +215,7 @@ export class GameComponent {
                         param.ref.service.alert(alert);
                     }
                     });
-            } else {
-                const alert = Alert.create(AlertType.WARNING, '<b>Wait until your turn</b>', 5000);
-                param.ref.service.alert(alert);
-                param.ref.hand.reset();
-            }
+            } 
         }
     }
 

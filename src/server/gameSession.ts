@@ -34,9 +34,9 @@ export class GameSession {
 
             let exists = _.get( _.head(rows), 'user_exists', 1);
             if ( exists ) {
-                callback(true);
+                callback(false);
             } else {
-                callback(true);
+                callback(false);
             }
         });
     }
