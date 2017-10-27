@@ -11,7 +11,7 @@ import { Tower } from './tower';
 @JsonObject
 export class GameState {
 
-    public static readonly MAX_HAND_SIZE: number = 5;
+    public static readonly MAX_HAND_SIZE: number = 7;
 
     /**
      * Parses a string into a fully functionaly GameState object

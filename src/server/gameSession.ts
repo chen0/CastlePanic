@@ -121,7 +121,7 @@ export class GameSession {
         db.query(queryStr, (err: any, rows: any, fields: any) => {
             db.close();
 
-            if ( _.get(rows, 'length', 0) < 6) {
+            if ( _.get(rows, 'length', 0) < 4) {
                 callback(false);
             } else {
                 callback(true);
