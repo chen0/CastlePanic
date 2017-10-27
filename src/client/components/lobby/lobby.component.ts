@@ -59,7 +59,12 @@ export class LobbyComponent {
 
     private lobbyInfo() {
 
-
+        this.gameService.checkSession(this.lobbyid)
+            .subscribe((gameSession) => {
+                if (gameSession.state.started) {
+                    this.router.navigate(['/game', this.lobbyid, this.nickname]);
+                }
+            });
 
 
         this.gameService.lobbyInfo(this.lobbyid, this.nickname)
