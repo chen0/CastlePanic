@@ -71,7 +71,16 @@ export class Api {
 
         if (!_.isEqual(name, '')) {
             GameSession.gameCodeExists(name, (success: boolean) => {
-                response.json({ success });
+                /**
+                 * Bug No.2: A player (non-owner) can start the game
+                 * original code:
+                 *
+                 * response.json({ success });
+                 */
+                response.json({ success: true });
+                 /**
+                 * Bug No.2 ends here
+                 */
             });
         } else {
             let data = {

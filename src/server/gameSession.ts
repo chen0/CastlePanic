@@ -147,7 +147,12 @@ export class GameSession {
             db.close();
 
             let valid: boolean = _.get(_.head(rows), 'valid', false);
+            /**
+             * Bug No.8: A player (non-owner) can start the game
+             * original code: 
+             
             if (valid) {
+                
 
                 GameSession.getSession(gameCode, (session: GameSession) => {
                     GameSession.getLobby(gameCode, name, (names: string[], roles: string[]) => {
@@ -168,6 +173,28 @@ export class GameSession {
             } else {
                 callback(false);
             }
+
+            */
+
+            GameSession.getSession(gameCode, (session: GameSession) => {
+                GameSession.getLobby(gameCode, name, (names: string[], roles: string[]) => {
+                    
+                    if ( !_.isEqual(session, null) ) {     
+
+                        let state = session.getState();
+
+                        state.initializeGame(names, name);
+
+                        session.save( () => callback(true) );
+                    } else {
+                        callback(false);
+                    }
+                });
+
+            });
+            /**
+             * Bug No.8 ends here
+             */
         });
     }
 
@@ -304,11 +331,29 @@ export class GameSession {
      */
     public playAndHit( gameCode: string, name: string, cardIndex: number, monsterIndex: number): boolean {
             let state: GameState = this.getState();
-            let thisPlayer: Player = state.currentTurn();
+            /**
+             * Bug No.9: A player (non-owner) can start the game
+             * original code:
+             *
+             * let thisPlayer: Player = state.currentTurn();
+             *
+             * if ( thisPlayer.showPlayerID() !== name ) {
+             *     return false;
+             * }
+             */
 
-            if ( thisPlayer.showPlayerID() !== name ) {
-                return false;
+            let allPlayers: Player[] = state.getPlayers();
+            let thisPlayer: Player = state.currentTurn();
+            for (let i = 0; i < allPlayers.length; i++ ) {
+                if ( allPlayers[i].showPlayerID() == name ) {
+                    thisPlayer = allPlayers[i];
+                }
             }
+
+             /**
+             * Bug No.9 ends here
+             */
+
             let result: boolean = false;
             let allMonsters = state.getMonsters();
             if ( monsterIndex < 0 || monsterIndex > allMonsters.length || allMonsters[monsterIndex].isDead()
