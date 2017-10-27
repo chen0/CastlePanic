@@ -38,20 +38,7 @@ export namespace CardToolkit {
             cards.push(new BlueSwordsman());
         }
 
-        // create all the GreenArcher
-        for (let i = 0; i < 3; i++) {
-            cards.push(new GreenArcher());
-        }
 
-        // create all the BlueArcher
-        for (let i = 0; i < 3; i++) {
-            cards.push(new BlueArcher());
-        }
-
-        // create all the RedArcher
-        for (let i = 0; i < 3; i++) {
-            cards.push(new RedArcher());
-        }
         // create all the BlueKnight
         for (let i = 0; i < 3; i++) {
             cards.push(new BlueKnight());
@@ -65,9 +52,25 @@ export namespace CardToolkit {
         for (let i = 0; i < 3; i++) {
             cards.push(new RedKnight());
         }
+		// create all the GreenArcher
+        for (let i = 0; i < 3; i++) {
+            cards.push(new GreenArcher());
+        }
 
-        return _.shuffle(cards);
-    }
+        // create all the BlueArcher
+        for (let i = 0; i < 3; i++) {
+            cards.push(new BlueArcher());
+        }
+
+        // create all the RedArcher
+        for (let i = 0; i < 3; i++) {
+            cards.push(new RedArcher());
+        }
+
+       // return _.shuffle(cards);
+	   //bug: Deck isn't shuffled.
+		return cards;
+	}
 
     /**
      * Converts the Types of an Array of cards into their appropriate child types.

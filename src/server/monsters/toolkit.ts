@@ -32,7 +32,9 @@ export namespace MonsterToolkit {
             monsters.push(new Troll());
         }
 
-        return _.shuffle(monsters);
+        //return _.shuffle(monsters);
+		//bug: Monster deck isn't shuffled.
+		return monsters;
     }
 
     /**
