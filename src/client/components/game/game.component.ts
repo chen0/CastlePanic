@@ -121,8 +121,8 @@ export class GameComponent {
             this.modalOpen = true;
             this.openModal(this.gameOverModal);
         } else if (_.get(this.gameSession, 'state.win', false) && !this.modalOpen) {
-            this.modalOpen = true;
-            this.openModal(this.gameOverModal);
+            /* this.modalOpen = true;
+            this.openModal(this.gameOverModal); */
         }
 
         for (let i = 0; i < this.gameSession.state.monsters.length; i++) {
