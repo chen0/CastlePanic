@@ -6,7 +6,15 @@ import { Card } from './deck/card';
 export class Player {
 
     // maximum number of cards a player can discard in a turn
-    public static readonly MAX_DISCARD: number = 2;
+    /**
+     * Bug No.6: Player can only discard one card instead of 2
+     * original code: 
+     * public static readonly MAX_DISCARD: number = 2;
+     */
+    public static readonly MAX_DISCARD: number = 1;
+    /**
+     * Bug No.6 ends here
+     */
 
     @JsonProperty('userid', String)
     public userid: string = '';

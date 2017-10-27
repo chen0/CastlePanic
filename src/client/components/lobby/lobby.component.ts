@@ -66,42 +66,19 @@ export class LobbyComponent {
                 }
             });
 
-        this.gameService.checkUserID(this.lobbyid, this.nickname)
-            .subscribe(
-                (checkID) => {
-                    this.checkID = checkID;
-                    if (!this.checkID.success) {
-                        const alert = Alert.create(AlertType.DANGER, '<b>OOPS, </b>Do not touch the url', 5000);
-                        this.service.alert(alert);
-                        this.router.navigate(['/']);
-                        this.timer.subscribe(() => {
-                            this.ngOnDestroy(); 
-                        });
-                    } else {
-                        this.gameService.checkGameCode(this.lobbyid)
-                            .subscribe(
-                                (checkID2) => {
-                                    this.checkID2 = checkID2;
-                                    if (!this.checkID2.success) {
-                                        const alert = Alert.create
-                                        (AlertType.DANGER, '<b>OOPS, </b>Do not touch the url', 5000);
-                                        this.service.alert(alert);
-                                        this.router.navigate(['/']);
-                                    } else {
-                                        this.gameService.lobbyInfo(this.lobbyid, this.nickname)
-                                           .subscribe((lobbyinfo) => {
-                                               this.users = lobbyinfo.users; 
-                                               this.roles = lobbyinfo.role; 
-                                               if (this.roles[this.users.indexOf(this.nickname)] !== 'owner') {
-                                                   this.showStartButton = false; 
-                                               } else {
-                                                   this.showStartButton = true;
-                                               }
-                                            });  
-                                    }
-                            });
-                    }
-            }); 
+
+        this.gameService.lobbyInfo(this.lobbyid, this.nickname)
+           .subscribe((lobbyinfo) => {
+               this.users = lobbyinfo.users; 
+               this.roles = lobbyinfo.role; 
+               if (this.roles[this.users.indexOf(this.nickname)] !== 'owner') {
+                   this.showStartButton = true; 
+               } else {
+                   this.showStartButton = true;
+               }
+        });  
+    
+
     }
 
     private startGame() {
